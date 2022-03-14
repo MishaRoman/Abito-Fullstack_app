@@ -1,9 +1,9 @@
 <template>
-  Hello World
+  <SearchPanel />
+  <AdList />
 </template>
 
-<script>
-export default {
-  
-}
+<script setup>
+import SearchPanel from '../components/SearchPanel.vue'
+import AdList from '../components/AdList.vue'
 </script>
