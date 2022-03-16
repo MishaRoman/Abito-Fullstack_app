@@ -219,9 +219,7 @@ body {
   padding: 5px;
   cursor: pointer;
 }
-.modal {
-  display: none;
-}
+
 .modal-overlay {
   display: flex;
   position: fixed;
@@ -231,13 +229,6 @@ body {
   bottom: 0;
   z-index: 10;
   background: rgba(0,0,0,.7);
-}
-
-.form {
-  display: none;
-}
-.form-active {
-  display: block;
 }
 
 .login-form{
@@ -264,14 +255,13 @@ body {
   border-bottom:1px solid #256EEB;
   margin-bottom: 5px;
   width: 50%;
-  transition: 0.15s ease-in-out
-
+  transition: 0.15s ease-in-out;
+  cursor: pointer;
 }
 
 .active {
   border-bottom:4px solid #256EEB;
 }
-
 
 .form-title{
   font-family: 'Roboto', sans-serif;

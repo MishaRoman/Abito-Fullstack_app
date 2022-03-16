@@ -60,8 +60,8 @@
         </nav>
 
         <div class="button-group">
-          <a href="#" class="button button-link">Login and registration</a>
-          <a href="#" class="button button-primary">Post an ad</a>
+          <a class="button button-link" @click="openAuthModal">Login and registration</a>
+          <a class="button button-primary">Post an ad</a>
         </div>
       </div>
       <button class="menu-button">
@@ -88,8 +88,25 @@
       </button>
     </div>
   </header>
+  
   <router-view></router-view>
+
+  <AuthModal
+    v-if="show"
+    @closeAuthModal="closeAuthModal"
+  />
 </template>
 
 <script setup>
+import AuthModal from './AuthModal.vue'
+import {ref} from 'vue'
+
+const show = ref(false)
+
+const openAuthModal = () => show.value = true
+
+const closeAuthModal = () => show.value = false
+
+
+
 </script>
