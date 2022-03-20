@@ -59,8 +59,9 @@
           </ul>
         </nav>
 
-        <div class="button-group">
-          <a class="button button-link" @click="openAuthModal">Login and registration</a>
+        <div class="header_button-group">
+          <img src="../assets/img/no_avatar.png" alt="" class="header-avatar" v-if="user" @click="logout"/>
+          <a class="button button-link" @click="openAuthModal" v-else>Login and registration</a>
           <a class="button button-primary">Post an ad</a>
         </div>
       </div>
@@ -99,14 +100,18 @@
 
 <script setup>
 import AuthModal from './AuthModal.vue'
-import {ref} from 'vue'
+import {ref, computed} from 'vue'
+import {useStore} from 'vuex'
+
+const store = useStore()
 
 const show = ref(false)
 
 const openAuthModal = () => show.value = true
-
 const closeAuthModal = () => show.value = false
 
+const logout = () => store.dispatch('logout')
 
+const user = computed(() => store.state.user.token)
 
 </script>
