@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Layout from '../components/Layout.vue'
 import Index from '../views/Index.vue'
 import SingleAd from '../views/SingleAd.vue'
+import CreateAd from '../views/CreateAd.vue'
 
 const routes = [
   {
@@ -18,7 +19,12 @@ const routes = [
         name: 'single',
         path: '/single',
         component: SingleAd
-      }
+      },
+      {
+        name: 'create',
+        path: '/create',
+        component: CreateAd
+      },
     ]
   }
 ]

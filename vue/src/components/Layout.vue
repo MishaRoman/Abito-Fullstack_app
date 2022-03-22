@@ -62,7 +62,7 @@
         <div class="header_button-group">
           <img src="../assets/img/no_avatar.png" alt="" class="header-avatar" v-if="user" @click="logout"/>
           <a class="button button-link" @click="openAuthModal" v-else>Login and registration</a>
-          <a class="button button-primary">Post an ad</a>
+          <router-link class="button button-primary" :to="{name: 'create'}">Post an ad</router-link>
         </div>
       </div>
       <button class="menu-button">
