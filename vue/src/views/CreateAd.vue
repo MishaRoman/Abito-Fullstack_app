@@ -5,25 +5,33 @@
       <h2>Create ad</h2>
       <h4>Fill the fields below</h4>
     </div>
-    <form class="create-form">
+    <form class="create-form" @submit.prevent="createAd">
       <label for="title">Title</label>
-      <input type="text" name="title" class="input" placeholder="title">
+      <input type="text" name="title" class="input" placeholder="title" v-model="ad.title">
 
       <label for="description">Description</label>
-      <textarea type="text" name="desctiption" class="text-input" rows="7" placeholder="Description"></textarea>
+      <textarea type="text"
+       name="desctiption"
+       class="text-input"
+       rows="7"
+       placeholder="Description"
+       v-model="ad.description"></textarea>
 
       <label for="price">Price in $</label>
-      <input type="number" value="0" name="price" class="input price-input" placeholder="Address">
+      <input type="number" name="price" class="input price-input" placeholder="Address" v-model="ad.price">
 
       <label for="category">Choose a category</label>
-      <select name="category" class="create-form__select" value="Choose">
-        <option value="one">One</option>
-        <option value="one">Two</option>
-        <option value="one">Three</option>
+      <select name="category" class="create-form__select" value="Choose" v-model="ad.category">
+        <option
+         v-for="category in categories"
+         :key="category.id"
+         :value="category.id"
+         >{{category.title}}</option>
+        
       </select>
 
       <label for="address">Address</label>
-      <input type="text" name="address" class="input">
+      <input type="text" name="address" class="input" placeholder="Address" v-model="ad.address">
       
       <button class="button create-form__button">Create</button>
     </form>
@@ -31,6 +39,21 @@
 </template>
 
 <script setup>
+import {computed} from 'vue'
+import store from '../store'
+
+const categories = computed(() => store.state.categories)
+
+const ad = {
+  title: '',
+  description: '',
+  price: 0,
+  category: null,
+  address: '',
+}
+
+const createAd = () => store.dispatch('createAd', ad)
+
 </script>
 
 <style scoped>

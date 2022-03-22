@@ -100,8 +100,12 @@
 
 <script setup>
 import AuthModal from './AuthModal.vue'
-import {ref, computed} from 'vue'
+import {ref, computed, onMounted} from 'vue'
 import {useStore} from 'vuex'
+
+onMounted(() => {
+  store.dispatch('getCategories')
+})
 
 const store = useStore()
 

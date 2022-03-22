@@ -1,17 +1,18 @@
 import {createStore} from 'vuex'
-import axios from 'axios'
+import axiosClient from '../axios'
 
 const store = createStore({
   state: {
     user: {
       data: {},
       token: sessionStorage.getItem('TOKEN')
-    }
+    },
+    categories: []
   },
   getters: {},
   actions: {
     register({commit}, user) {
-      axios.post('http://127.0.0.1:8000/api/register', user)
+      axiosClient.post('/register', user)
         .then(({data}) => {
           commit('setUser', data.user)
           commit('setToken', data.token)
@@ -19,8 +20,7 @@ const store = createStore({
         })
     },
     login({commit}, user) {
-      console.log(user);
-      axios.post('http://127.0.0.1:8000/api/login', user)
+      axiosClient.post('/login', user)
         .then(({data}) => {
           commit('setUser', data.user)
           commit('setToken', data.token)
@@ -30,6 +30,20 @@ const store = createStore({
     logout({commit}) {
       commit('logout')
     },
+
+    createAd({commit}, ad) {
+      axiosClient.post('/ads', ad)
+        .then((res) => {
+          console.log(res.data)
+        })
+    },
+
+    getCategories({commit}) {
+      axiosClient.get('/categories')
+        .then((res) => {
+          commit('setCategories', res.data)
+        })
+    }
   },
   mutations: {
     setUser: (state, user) => {
@@ -44,6 +58,9 @@ const store = createStore({
       state.user.data = {};
       sessionStorage.removeItem("TOKEN");
     },
+    setCategories: (state, categories) => {
+      state.categories = categories
+    }
   },
 })
 
