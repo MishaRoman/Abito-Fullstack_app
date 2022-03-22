@@ -102,7 +102,9 @@
 import AuthModal from './AuthModal.vue'
 import {ref, computed, onMounted} from 'vue'
 import {useStore} from 'vuex'
+import {useRouter} from 'vue-router'
 
+const router = useRouter()
 onMounted(() => {
   store.dispatch('getCategories')
 })
@@ -114,8 +116,11 @@ const show = ref(false)
 const openAuthModal = () => show.value = true
 const closeAuthModal = () => show.value = false
 
-const logout = () => store.dispatch('logout')
-
+const logout = () => {
+  if(confirm('Are you sure you want to logout?')) {
+    store.dispatch('logout').then(router.push('/'))
+  }
+}
 const user = computed(() => store.state.user.token)
 
 </script>

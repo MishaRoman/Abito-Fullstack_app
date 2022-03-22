@@ -97,9 +97,6 @@
 <script setup>
 import {ref} from 'vue'
 import store from '../store'
-import {useRouter} from 'vue-router'
-
-const router = useRouter()
 
 const isLoginFormActive = ref(true)
 const openLoginForm = () => isLoginFormActive.value = true

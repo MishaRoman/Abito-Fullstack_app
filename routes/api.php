@@ -18,6 +18,7 @@ use App\Http\Controllers\CategoriesController;
 */
 
 Route::middleware('auth:sanctum')->group(function() {
+    Route::post('/logout', [AuthController::class, 'logout']);
     Route::controller(AdsController::class)->group(function () {
         Route::post('/ads', 'store');
     });

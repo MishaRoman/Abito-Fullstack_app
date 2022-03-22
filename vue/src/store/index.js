@@ -28,7 +28,11 @@ const store = createStore({
         })
     },
     logout({commit}) {
-      commit('logout')
+      axiosClient.post('/logout')
+        .then(response => {
+          commit('logout')
+          return response
+        })
     },
 
     createAd({commit}, ad) {

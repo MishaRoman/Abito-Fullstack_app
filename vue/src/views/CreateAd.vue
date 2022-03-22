@@ -14,7 +14,6 @@
        name="desctiption"
        class="text-input"
        rows="7"
-       placeholder="Description"
        v-model="ad.description"></textarea>
 
       <label for="price">Price in $</label>

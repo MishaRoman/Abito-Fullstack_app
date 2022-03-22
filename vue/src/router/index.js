@@ -3,6 +3,7 @@ import Layout from '../components/Layout.vue'
 import Index from '../views/Index.vue'
 import SingleAd from '../views/SingleAd.vue'
 import CreateAd from '../views/CreateAd.vue'
+import store from "../store";
 
 const routes = [
   {
@@ -23,6 +24,7 @@ const routes = [
       {
         name: 'create',
         path: '/create',
+        meta: {requiresAuth: true},
         component: CreateAd
       },
     ]
@@ -33,5 +35,14 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !store.state.user.token) {
+    router.push(from)
+    alert('You need to be logged in to access this page')
+  } else {
+    next();
+  }
+});
 
 export default router
