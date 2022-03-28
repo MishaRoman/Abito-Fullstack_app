@@ -52,6 +52,11 @@
         <button class="button btn-submit" role="button" type="submit">
           Log in
         </button>
+        <div v-if="Object.keys(loginErrors).length">
+          <ul v-for="(field, i) of Object.keys(loginErrors)" :key="i">
+            <li v-for="(error, ind) of loginErrors[field] || []" :key="ind">{{error}}</li>
+          </ul>
+        </div>
       </form>
 
       <form v-else @submit="register">
@@ -89,6 +94,12 @@
         <button class="button btn-submit" role="button" type="submit">
           Register
         </button>
+        <div v-if="Object.keys(signupErrors).length">
+          <ul v-for="(field, i) of Object.keys(signupErrors)" :key="i">
+            <li v-for="(error, ind) of signupErrors[field] || []" :key="ind">{{error}}</li>
+          </ul>
+        </div>
+        
       </form>
     </div>
   </div>
@@ -106,6 +117,12 @@ const emit = defineEmits(['closeAuthModal'])
 function closeAuthModal() {
   emit('closeAuthModal')
 }
+function openAuthModal() {
+  emit('openAuthModal')
+}
+
+let loginErrors = ref({})
+let signupErrors = ref({})
 
 const user = {
   name: '',
@@ -120,14 +137,26 @@ const register = (e) => {
    .then(() => {
      closeAuthModal()
    })
+   .catch(err => {
+    signupErrors.value = err.response.data.error.message
+   })
 }
 
 const login = (e) => {
   e.preventDefault()
   store.dispatch('login', {'email': user.email, 'password': user.password})
    .then(() => {
-     closeAuthModal()
+    closeAuthModal()
    })
-}
+   .catch(err => {
+    loginErrors.value = err.response.data.error.message
+   })
+    }
 
 </script>
+
+<style scoped>
+li {
+  color: red
+}
+</style>

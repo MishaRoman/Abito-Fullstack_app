@@ -7,12 +7,13 @@ const store = createStore({
       data: {},
       token: sessionStorage.getItem('TOKEN')
     },
-    categories: []
+    categories: [],
+    loginErrorMessage: ''
   },
   getters: {},
   actions: {
     register({commit}, user) {
-      axiosClient.post('/register', user)
+      return axiosClient.post('/register', user)
         .then(({data}) => {
           commit('setUser', data.user)
           commit('setToken', data.token)
@@ -20,11 +21,11 @@ const store = createStore({
         })
     },
     login({commit}, user) {
-      axiosClient.post('/login', user)
+      return axiosClient.post('/login', user)
         .then(({data}) => {
-          commit('setUser', data.user)
+          commit('setUser', data.user);
           commit('setToken', data.token)
-          return data
+          return data;
         })
     },
     logout({commit}) {
@@ -38,7 +39,7 @@ const store = createStore({
     createAd({commit}, ad) {
       axiosClient.post('/ads', ad)
         .then((res) => {
-          console.log(res.data)
+          return res
         })
     },
 
@@ -64,6 +65,9 @@ const store = createStore({
     },
     setCategories: (state, categories) => {
       state.categories = categories
+    },
+    setLoginErrorMessage: (state, message) => {
+      state.loginErrorMessage = message
     }
   },
 })
