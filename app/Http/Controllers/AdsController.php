@@ -3,11 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAdRequest;
+use App\Http\Resources\AdResource;
 use App\Models\Ad;
 use Carbon\Carbon;
 
 class AdsController extends Controller
 {
+    public function index()
+    {
+        return AdResource::collection(Ad::get());
+    }
+
     public function store(StoreAdRequest $request)
     {
         $data = $request->validated();

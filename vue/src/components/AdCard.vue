@@ -5,15 +5,17 @@
     </router-link>
     <div class="card-header">
       <router-link class="card-link" :to="{name: 'single'}">
-        <h3 class="card-title">Electric scooter</h3>
+        <h3 class="card-title">{{ad.title}}</h3>
       </router-link>
     </div>
-    <strong class="card-price">100 $</strong>
-    <p class="card-text">Address</p>
-    <p class="card-text">10.06 11:39</p>
+    <strong class="card-price">{{ad.price}} $</strong>
+    <p class="card-text">{{ad.address}}</p>
+    <p class="card-text">{{ad.created_at}}</p>
   </div>
 </template>
 
 <script setup>
-
+const { ad } = defineProps({
+  ad: Object
+}) 
 </script>

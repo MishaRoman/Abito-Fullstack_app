@@ -38,9 +38,15 @@ class AuthController extends Controller
         ]);
 
         if(!Auth::attempt($credentials)) {
-            return response([
-                'error' => 'The provided credentials are not correct'
-            ], 422);
+            $json = [
+                'success' => false,
+                'error' => [
+                    'message' => [
+                        'email' => ['The provided credentials are not correct']
+                    ],
+                ],
+            ];
+            return response()->json($json, 422);
         }
         $user = Auth::user();
         $token = $user->createToken('main')->plainTextToken;
