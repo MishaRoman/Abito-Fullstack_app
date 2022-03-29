@@ -21,5 +21,6 @@ import { computed } from 'vue'
 const ads = computed(() => store.state.ads)
 
 store.dispatch('getAds')
+store.dispatch('getAd', 1)
 
 </script>

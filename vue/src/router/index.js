@@ -18,7 +18,7 @@ const routes = [
       },
       {
         name: 'single',
-        path: '/single',
+        path: '/ad/:id',
         component: SingleAd
       },
       {

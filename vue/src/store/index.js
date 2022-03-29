@@ -8,7 +8,7 @@ const store = createStore({
       token: sessionStorage.getItem('TOKEN')
     },
     categories: [],
-    ads: []
+    ads: [],
   },
   getters: {},
   actions: {
@@ -56,6 +56,12 @@ const store = createStore({
           commit('setAds', res.data)
           return res
         })
+    },
+    getAd({commit}, id) {
+      return axiosClient.get(`/ads/${id}`)
+        .then((res) => {
+          return res.data
+        })
     }
   },
   mutations: {
@@ -76,7 +82,7 @@ const store = createStore({
     },
     setAds: (state, ads) => {
       state.ads = ads
-    }
+    },
   },
 })
 

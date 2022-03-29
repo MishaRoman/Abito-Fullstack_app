@@ -5,29 +5,22 @@
   <div class="container page-content page-content-single">
     <main class="main main-single">
       <div class="content">
-        <h2 class="page-title">Electric scooter kugoo Gx</h2>
+        <h2 class="page-title">{{ad.title}}</h2>
         <img src="../assets/img/card-image.jpg" class="img">
 
         <div class="content-text">
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing, elit. Quod
-            aspernatur, doloribus mollitia necessitatibus animi debitis,
-            incidunt dolore nisi expedita, id corporis nostrum dignissimos non
-            commodi, voluptatem rerum aliquid? Ex, similique necessitatibus id
-            expedita vero ipsum soluta. Exercitationem ratione cum consequatur
-            atque necessitatibus alias. Eos sequi assumenda id ab animi,
-            temporibus deleniti ipsa blanditiis quisquam adipisci. Architecto
-            consequatur labore culpa reprehenderit, pariatur eius ab, saepe odit
-            deserunt qui aliquam cum perspiciatis?
-          </p>
+          <p>{{ad.description}}</p>
+        </div>
+        <div class="address">
+          <span class="address-text">{{ad.address}}</span>
         </div>
       </div>
       <div class="author">
-        <strong class="single-price">100 $</strong>
+        <strong class="single-price">{{ad.price}} $</strong>
         <div class="author-wrapper">
           <div class="author-info">
-            <span class="author-name">John Silver</span>
-            <span class="author-status">Member since 10.10.2010</span>
+            <span class="author-name">{{ad.author.name}}</span>
+            <span class="author-status">Member since {{ad.author.member_since}}</span>
           </div>
           <img src="../assets/img/avatar.jpg" alt="" class="author-avatar" />
         </div>
@@ -46,4 +39,25 @@
 </template>
 
 <script setup>
+import {useRoute} from 'vue-router'
+import {ref} from 'vue'
+import store from '../store'
+
+const route = useRoute()
+
+const ad = ref({})
+
+store.dispatch('getAd', route.params.id)
+  .then(res => {
+    ad.value = res.data
+  })
+
 </script>
+
+<style scoped>
+.address-text {
+  font-size: 14px;
+  line-height: 16px;
+  color: #999999;
+}
+</style>
