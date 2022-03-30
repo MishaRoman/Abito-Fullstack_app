@@ -60,7 +60,9 @@
         </nav>
 
         <div class="header_button-group">
-          <img src="../assets/img/no_avatar.png" alt="" class="header-avatar" v-if="user" @click="logout"/>
+          <router-link v-if="user" :to="{name: 'editProfile'}">
+            <img src="../assets/img/no_avatar.png" alt="" class="header-avatar"/>
+          </router-link>
           <a class="button button-link" @click="openAuthModal" v-else>Login and registration</a>
           <router-link class="button button-primary" :to="{name: 'create'}">Post an ad</router-link>
         </div>
@@ -100,27 +102,18 @@
 
 <script setup>
 import AuthModal from './AuthModal.vue'
-import {ref, computed, onMounted} from 'vue'
+import {ref, computed} from 'vue'
 import {useStore} from 'vuex'
-import {useRouter} from 'vue-router'
-
-const router = useRouter()
-onMounted(() => {
-  store.dispatch('getCategories')
-})
 
 const store = useStore()
+
+store.dispatch('getCategories')
 
 const show = ref(false)
 
 const openAuthModal = () => show.value = true
 const closeAuthModal = () => show.value = false
 
-const logout = () => {
-  if(confirm('Are you sure you want to logout?')) {
-    store.dispatch('logout').then(router.push('/'))
-  }
-}
 const user = computed(() => store.state.user.token)
 
 </script>

@@ -3,6 +3,7 @@ import Layout from '../components/Layout.vue'
 import Index from '../views/Index.vue'
 import SingleAd from '../views/SingleAd.vue'
 import CreateAd from '../views/CreateAd.vue'
+import EditProfile from '../views/EditProfile.vue'
 import store from "../store";
 
 const routes = [
@@ -26,6 +27,12 @@ const routes = [
         path: '/create',
         meta: {requiresAuth: true},
         component: CreateAd
+      },
+      {
+        name: 'editProfile',
+        path: '/profile/edit',
+        meta: {requiresAuth: true},
+        component: EditProfile
       },
     ]
   }
