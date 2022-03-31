@@ -67,6 +67,7 @@
          placeholder="fullname"
          name="name"
          v-model="user.name"
+         required
         />
         <br />
         <input
@@ -75,6 +76,16 @@
          placeholder="email"
          name="email"
          v-model="user.email"
+         required
+        />
+        <br />
+        <input
+         class="form-input"
+         type="tel"
+         placeholder="Phone number"
+         name="phone_number"
+         v-model.number="user.phone_number"
+         required
         />
         <br />
         <input
@@ -82,14 +93,16 @@
           type="password"
           placeholder="password"
           name="password"
-         v-model="user.password"
+          v-model="user.password"
+          required
         /><br />
         <input
           class="form-input"
           type="password"
           placeholder="confirm password"
           name="password_confirmation"
-         v-model="user.password_confirmation"
+          v-model="user.password_confirmation"
+          required
         /><br />
         <button class="button btn-submit" role="button" type="submit">
           Register
@@ -127,6 +140,7 @@ let signupErrors = ref({})
 const user = {
   name: '',
   email: '',
+  phone_number: null,
   password: '',
   password_confirmation: ''
 }
@@ -151,7 +165,7 @@ const login = (e) => {
    .catch(err => {
     loginErrors.value = err.response.data.error.message
    })
-    }
+}
 
 </script>
 

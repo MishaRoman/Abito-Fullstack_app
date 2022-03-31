@@ -13,12 +13,14 @@ class AuthController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|string|unique:users,email',
+            'phone_number' => 'required|min:10|max:13|unique:users,phone_number',
             'password' => 'required|confirmed|min:8',
         ]);
 
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'phone_number' => $data['phone_number'],
             'password' => bcrypt($data['password']),
         ]);
 
@@ -66,6 +68,37 @@ class AuthController extends Controller
         return response([
             'success' => true
         ]);
+    }
+
+    public function user()
+    {
+        return Auth::user();
+    }
+
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
+        if($user->phone_number == $request->phone_number) {
+            $data = $request->validate([
+                'name' => 'required|string',
+            ]);
+        } else {
+            $data = $request->validate([
+                'name' => 'required|string',
+                'phone_number' => 'required|min:10|max:13|unique:users,phone_number',
+            ]);
+        }
+
+        $user->update($data);
+
+        $json = [
+            'success' => 'true',
+            'message' => 'Profile has been updated successfully',
+            'user' => $user,
+        ];
+
+        return response()->json($json);
     }
 
     

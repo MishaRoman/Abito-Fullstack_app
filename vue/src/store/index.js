@@ -62,7 +62,19 @@ const store = createStore({
         .then((res) => {
           return res.data
         })
-    }
+    },
+    getAuthUser({commit}) {
+      return axiosClient.get('/user')
+        .then((res) => {
+          return res.data
+        })
+    },
+    updateUser({commit}, data) {
+      return axiosClient.post('/user/update', data)
+        .then(res => {
+          return res.data
+        })
+    },
   },
   mutations: {
     setUser: (state, user) => {

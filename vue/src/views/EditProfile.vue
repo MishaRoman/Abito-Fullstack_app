@@ -13,10 +13,33 @@
       <div class="inputs-block">
         <div class="input-field">
           <label for="name" class="label">Name</label><br>
-          <input type="text" id="name" name="name" class="input">
+          <input
+           type="text"
+           id="name"
+           name="name"
+           class="input"
+           v-model="user.name"
+          >
+          <label for="phone_number" class="label">Phone number</label>
+          <br>
+          <input type="tel"
+           id="phone_number"
+           name="phone_number" 
+           class="input" 
+           v-model.number="user.phone_number"
+          >
           <div class="save">
-            <button class="save-button">Save changes</button>
+            <button class="save-button" @click="updateUser">Save changes</button>
           </div>
+
+          <div class="success-message" v-if="successMsg">
+            <span>{{successMsg}}</span>
+          </div>
+          <p v-if="Object.keys(errors).length" class="errors-block">
+            <ul v-for="(field, i) of Object.keys(errors)" :key="i">
+              <li v-for="(error, ind) of errors[field] || []" :key="ind">{{error}}</li>
+            </ul>
+          </p>
         </div>
       </div>
     </div>
@@ -29,9 +52,38 @@
 
 <script setup>
 import store from '../store'
+import {ref} from 'vue'
 import {useRouter} from 'vue-router'
 
 const router = useRouter()
+
+const user = ref({
+  name: '',
+  phone_number: null,
+})
+
+const successMsg = ref('')
+const errors = ref({})
+
+store.dispatch('getAuthUser')
+  .then(data => {
+    user.value.name = data.name
+    user.value.phone_number = data.phone_number
+  })
+
+const updateUser = () => {
+  const data = {
+    name: user.value.name,
+    phone_number: user.value.phone_number
+  }
+  store.dispatch('updateUser', data)
+    .then(res => {
+      successMsg.value = res.message
+    })
+    .catch(err => {
+      errors.value = err.response.data.error.message
+    })
+}
 
 const logout = () => {
   if(confirm('Are you sure you want to logout?')) {
@@ -56,6 +108,14 @@ const logout = () => {
   border-radius: 99%;
   width: 250px;
   height: 250px;
+}
+.inputs-block {
+  display: flex;
+  flex: 0 0 ;
+}
+.errors-block ul {
+  padding: 0;
+  color: red;
 }
 .file-input {
   margin-top: 15px;
@@ -112,6 +172,12 @@ const logout = () => {
   cursor: pointer;
   text-decoration: none;
   border: none;
+}
+
+.success-message {
+  margin-top: 20px;
+  color: green;
+  font-weight: 700;
 }
 
 input[type="file"] {

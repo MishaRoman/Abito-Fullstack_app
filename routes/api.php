@@ -18,6 +18,8 @@ use App\Http\Controllers\CategoriesController;
 */
 
 Route::middleware('auth:sanctum')->group(function() {
+    Route::get('/user', [AuthController::class, 'user']);
+    Route::post('/user/update', [AuthController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::controller(AdsController::class)->group(function () {
         Route::post('/ads', 'store');
