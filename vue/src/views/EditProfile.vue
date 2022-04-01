@@ -11,25 +11,55 @@
         </div>
       </div>
       <div class="inputs-block">
-        <div class="input-field">
-          <label for="name" class="label">Name</label><br>
-          <input
-           type="text"
-           id="name"
-           name="name"
-           class="input"
-           v-model="user.name"
-          >
-          <label for="phone_number" class="label">Phone number</label>
-          <br>
-          <input type="tel"
-           id="phone_number"
-           name="phone_number" 
-           class="input" 
-           v-model.number="user.phone_number"
-          >
+        <div class="input-fields">
+          <div class="input-field">
+            <div class="edit">
+              <label for="name" class="label">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="input"
+                :disabled="isNameDisabled"
+                :autofocus="isNameDisabled"
+                v-model="user.name"
+                @change="isSaveButtonDisabled = false"
+                >
+            </div>
+            <button
+             class="edit-button"
+             @click="isNameDisabled = false"
+             :disabled="!isNameDisabled"
+             :class="isNameDisabled ? '': 'disabled'"
+            >Edit</button>
+          </div>
+          
+          <div class="input-field">
+            <div class="edit">
+              <label for="phone_number" class="label">Phone number</label>
+              <input type="tel"
+               id="phone_number"
+               name="phone_number" 
+               class="input"
+               :disabled="isPhoneDisabled"
+               v-model.number="user.phone_number"
+               @change="isSaveButtonDisabled = false"
+              >
+            </div>
+            <button
+             class="edit-button"
+             @click="isPhoneDisabled = false"
+             :disabled="!isPhoneDisabled"
+             :class="isPhoneDisabled ? '': 'disabled'"
+            >Edit</button>
+          </div>
           <div class="save">
-            <button class="save-button" @click="updateUser">Save changes</button>
+            <button
+             class="save-button"
+             @click="updateUser"
+             :disabled="isSaveButtonDisabled"
+             :class="isSaveButtonDisabled ? 'disabled': ''"
+            >Save changes</button>
           </div>
 
           <div class="success-message" v-if="successMsg">
@@ -61,6 +91,11 @@ const user = ref({
   name: '',
   phone_number: null,
 })
+
+let isNameDisabled = ref(true)
+let isPhoneDisabled = ref(true)
+let isSaveButtonDisabled = ref(true)
+
 
 const successMsg = ref('')
 const errors = ref({})
@@ -122,7 +157,9 @@ const logout = () => {
   text-align: center;
 }
 .input-field {
+  display: flex;
   text-align: center;
+  align-items: flex-end;
 }
 .file-input-label {
   background: #256EEB;
@@ -145,6 +182,23 @@ const logout = () => {
   width: 300px;
   margin-top: 5px;
   margin-bottom: 15px;
+}
+
+.edit-button {
+  background: #256EEB;
+  border-radius: 5px;
+  display: inline-block;
+  color: #fff;
+  padding: 10px 15px;
+  cursor: pointer;
+  height: 42px;
+  margin-bottom: 14px;
+  margin-left: 6px;
+  border: none;
+}
+.disabled {
+  opacity: 0.5;
+  cursor: default !important;
 }
 .logout {
   text-align: center;
@@ -191,7 +245,7 @@ input[type="file"] {
     width: 100%;
     text-align: center;
   }
-  .input-field {
+  .input-fields {
     margin-top: 20px;
   }
   .input {
