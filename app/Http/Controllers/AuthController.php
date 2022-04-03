@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use App\Models\User;
+use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -72,22 +76,19 @@ class AuthController extends Controller
 
     public function user()
     {
-        return Auth::user();
+        $user = Auth::user();
+        return new UserResource($user);
     }
 
-    public function update(Request $request)
+    public function update(UpdateProfileRequest $request)
     {
         $user = Auth::user();
 
-        if($user->phone_number == $request->phone_number) {
-            $data = $request->validate([
-                'name' => 'required|string',
-            ]);
-        } else {
-            $data = $request->validate([
-                'name' => 'required|string',
-                'phone_number' => 'required|min:10|max:13|unique:users,phone_number',
-            ]);
+        $data = $request->validated();
+
+        if(isset($data['image'])) {
+            $relativePath = $this->saveImage($data['image']);
+            $data['image'] = $relativePath;
         }
 
         $user->update($data);
@@ -99,6 +100,43 @@ class AuthController extends Controller
         ];
 
         return response()->json($json);
+    }
+
+    private function saveImage($image)
+    {
+        // Check if image is valid base64 string
+        if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
+            // Take out the base64 encoded text without mime type
+            $image = substr($image, strpos($image, ',') + 1);
+            // Get file extension
+            $type = strtolower($type[1]);
+
+            // Check if file is an image
+            if (!in_array($type, ['jpg', 'jpeg', 'png'])) {
+                throw new \Exception('invalid image type');
+            }
+
+            $image = str_replace(' ', '+', $image);
+            $image = base64_decode($image);
+
+            if ($image === false) {
+                throw new \Exception('base64_decode failed');
+            }
+        } else {
+            throw new \Exception('did not match data URI with image data');
+        }
+
+        $dir = 'images/';
+        $file = Str::random() . '.' . $type;
+        $absolutePath = public_path($dir);
+        $relativePath = $dir . $file;
+
+        if (!File::exists($absolutePath)) {
+            File::makeDirectory($absolutePath, 0755, true);
+        }
+        file_put_contents($relativePath, $image);
+
+        return $relativePath;
     }
 
     

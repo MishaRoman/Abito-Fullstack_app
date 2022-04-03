@@ -60,8 +60,8 @@
         </nav>
 
         <div class="header_button-group">
-          <router-link v-if="user" :to="{name: 'editProfile'}">
-            <img src="../assets/img/no_avatar.png" alt="" class="header-avatar"/>
+          <router-link v-if="userToken" :to="{name: 'editProfile'}">
+            <img :src="user.image_url" alt="" class="header-avatar"/>
           </router-link>
           <a class="button button-link" @click="openAuthModal" v-else>Login and registration</a>
           <router-link class="button button-primary" :to="{name: 'create'}">Post an ad</router-link>
@@ -114,6 +114,18 @@ const show = ref(false)
 const openAuthModal = () => show.value = true
 const closeAuthModal = () => show.value = false
 
-const user = computed(() => store.state.user.token)
+const userToken = computed(() => store.state.user.token)
+
+let user = {
+  name: '',
+  image_url: '',
+}
+
+store.dispatch('getAuthUser')
+  .then(data => {
+    user.name = data.name
+    user.image_url = data.image_url
+  })
+
 
 </script>

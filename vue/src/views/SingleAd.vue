@@ -22,7 +22,7 @@
             <span class="author-name">{{ad.author.name}}</span>
             <span class="author-status">Member since {{ad.author.member_since}}</span>
           </div>
-          <img src="../assets/img/avatar.jpg" alt="" class="author-avatar" />
+          <img :src="ad.author.image_url" class="author-avatar" />
         </div>
 
         <div class="button-group">
@@ -50,6 +50,7 @@ const ad = ref({})
 store.dispatch('getAd', route.params.id)
   .then(res => {
     ad.value = res.data
+    console.log(res.data);
   })
 
 </script>

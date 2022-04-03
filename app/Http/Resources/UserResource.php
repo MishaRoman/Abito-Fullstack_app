@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\URL;
 
 class UserResource extends JsonResource
 {
@@ -17,6 +18,8 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'phone_number' => $this->phone_number,
+            'image_url' => $this->image ? URL::to($this->image) : URL::to('images/no_avatar.png'),
             'member_since' => (new \DateTime($this->created_at))->format('d.m.Y'),
         ];
     }

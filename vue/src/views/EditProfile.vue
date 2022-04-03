@@ -4,10 +4,10 @@
     <h2 class="main-title">Profile settings</h2>
     <div class="main-wrapper">
       <div class="img-wrapper">
-        <img class="img" src="../assets/img/no_avatar.png">
+        <img class="img" :src="user.image_url">
         <div class="file-input">
           <label for="image" class="file-input-label">Edit Image</label>
-          <input type="file" id="image"/>
+          <input type="file" id="image" @change="onImageChoose"/>
         </div>
       </div>
       <div class="inputs-block">
@@ -90,12 +90,13 @@ const router = useRouter()
 const user = ref({
   name: '',
   phone_number: null,
+  image: '',
+  image_url: '',
 })
 
 let isNameDisabled = ref(true)
 let isPhoneDisabled = ref(true)
 let isSaveButtonDisabled = ref(true)
-
 
 const successMsg = ref('')
 const errors = ref({})
@@ -104,13 +105,34 @@ store.dispatch('getAuthUser')
   .then(data => {
     user.value.name = data.name
     user.value.phone_number = data.phone_number
+    user.value.image_url = data.image_url
   })
 
-const updateUser = () => {
+function onImageChoose(ev) {
+  const file = ev.target.files[0]
+
+  const reader = new FileReader()
+  reader.onload = () => {
+    user.value.image = reader.result
+
+    user.value.image_url = reader.result
+
+    ev.target.value = ''
+  }
+  reader.readAsDataURL(file)
+  isSaveButtonDisabled.value = false
+}
+
+function updateUser () {
   const data = {
     name: user.value.name,
-    phone_number: user.value.phone_number
+    image: user.value.image,
+    phone_number: null,
   }
+  if(!isPhoneDisabled) {
+    data['phone_number'] = user.value.phone_number    
+  }
+  
   store.dispatch('updateUser', data)
     .then(res => {
       successMsg.value = res.message

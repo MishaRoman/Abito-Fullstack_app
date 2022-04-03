@@ -66,7 +66,7 @@ const store = createStore({
     getAuthUser({commit}) {
       return axiosClient.get('/user')
         .then((res) => {
-          return res.data
+          return res.data.data
         })
     },
     updateUser({commit}, data) {
