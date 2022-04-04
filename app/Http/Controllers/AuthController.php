@@ -89,6 +89,12 @@ class AuthController extends Controller
         if(isset($data['image'])) {
             $relativePath = $this->saveImage($data['image']);
             $data['image'] = $relativePath;
+
+            // If there is an old image, delete it
+            if ($user->image) {
+                $absolutePath = public_path($user->image);
+                File::delete($absolutePath);
+            }
         }
 
         $user->update($data);

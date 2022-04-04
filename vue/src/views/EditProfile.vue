@@ -127,7 +127,7 @@ function updateUser () {
   const data = {
     name: user.value.name,
     image: user.value.image,
-    phone_number: null,
+    phone_number: undefined,
   }
   if(!isPhoneDisabled) {
     data['phone_number'] = user.value.phone_number    

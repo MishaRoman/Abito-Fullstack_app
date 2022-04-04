@@ -26,7 +26,7 @@
         </div>
 
         <div class="button-group">
-          <button class="button button-block button-primary">
+          <button class="button button-block button-primary" ref="phoneNumBtn">
             Show phone number
           </button>
           <button class="button button-block button-success">
@@ -40,18 +40,35 @@
 
 <script setup>
 import {useRoute} from 'vue-router'
-import {ref} from 'vue'
+import {ref, onMounted} from 'vue'
 import store from '../store'
 
 const route = useRoute()
 
-const ad = ref({})
+const ad = ref({
+  title: '',
+  description: '',
+  address: '',
+  price: '',
+  author: {
+    name: '',
+    phone_number: null,
+    image_url: '',
+    member_since: null,
+  }
+})
 
 store.dispatch('getAd', route.params.id)
   .then(res => {
     ad.value = res.data
-    console.log(res.data);
   })
+
+const phoneNumBtn = ref(null)
+
+onMounted(() => {
+  phoneNumBtn.value.addEventListener('click', () => phoneNumBtn.value.innerText = ad.value.author.phone_number)
+});
+
 
 </script>
 

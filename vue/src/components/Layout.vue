@@ -116,16 +116,17 @@ const closeAuthModal = () => show.value = false
 
 const userToken = computed(() => store.state.user.token)
 
-let user = {
+let user = ref({
   name: '',
   image_url: '',
-}
+})
 
 store.dispatch('getAuthUser')
   .then(data => {
-    user.name = data.name
-    user.image_url = data.image_url
+    user.value.name = data.name
+    user.value.image_url = data.image_url
   })
-
-
+  .catch(err => {
+    console.log('Unauthenticated');
+  })
 </script>
