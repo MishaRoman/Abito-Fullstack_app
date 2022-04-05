@@ -28,8 +28,8 @@
         </svg>
       </router-link>
 
-      <div class="navbar-panel">
-        <button class="close-menu">
+      <div class="navbar-panel" :class="isMenuOpen ? 'is-open': ''">
+        <button class="close-menu" @click="isMenuOpen = false">
           <svg
             fill="#000000"
             xmlns="http://www.w3.org/2000/svg"
@@ -44,30 +44,28 @@
         </button>
         <nav class="navbar-menu">
           <ul class="menu">
-            <li class="menu-item">
-              <a href="#" class="menu-link">Auto</a>
-            </li>
-            <li class="menu-item">
-              <a href="#" class="menu-link">Real estate</a>
-            </li>
-            <li class="menu-item">
-              <a href="#" class="menu-link">Work</a>
-            </li>
-            <li class="menu-item">
-              <a href="#" class="menu-link">Services</a>
+            <li class="menu-item"
+             v-for="category in categories"
+             :key="category.id">
+              <a href="#" class="menu-link">{{category.title}}</a>
             </li>
           </ul>
         </nav>
 
         <div class="header_button-group">
-          <router-link v-if="userToken" :to="{name: 'editProfile'}">
+          <router-link v-if="userToken" :to="{name: 'editProfile'}" @click="isMenuOpen = false">
             <img :src="user.image_url" alt="" class="header-avatar"/>
           </router-link>
           <a class="button button-link" @click="openAuthModal" v-else>Login and registration</a>
-          <router-link class="button button-primary" :to="{name: 'create'}">Post an ad</router-link>
+          <router-link
+           class="button button-primary"
+           :to="{name: 'create'}"
+           @click="isMenuOpen = false"
+           >Post an ad
+          </router-link>
         </div>
       </div>
-      <button class="menu-button">
+      <button class="menu-button" @click="isMenuOpen = true">
         <svg
           width="30"
           height="30"
@@ -95,7 +93,7 @@
   <router-view></router-view>
 
   <AuthModal
-    v-if="show"
+    v-if="showAuthModal"
     @closeAuthModal="closeAuthModal"
   />
 </template>
@@ -109,10 +107,13 @@ const store = useStore()
 
 store.dispatch('getCategories')
 
-const show = ref(false)
+const categories = computed(() => store.state.categories)
 
-const openAuthModal = () => show.value = true
-const closeAuthModal = () => show.value = false
+const showAuthModal = ref(false)
+const isMenuOpen = ref(false)
+
+const openAuthModal = () => showAuthModal.value = true
+const closeAuthModal = () => showAuthModal.value = false
 
 const userToken = computed(() => store.state.user.token)
 
@@ -129,4 +130,5 @@ store.dispatch('getAuthUser')
   .catch(err => {
     console.log('Unauthenticated');
   })
+
 </script>
