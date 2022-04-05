@@ -355,6 +355,35 @@ body {
   color:#fff;
   margin-bottom: 10px;
 }
+
+/* Dropzone styles */
+.dz-success-mark,
+.dz-error-mark {
+  display: none;
+}
+.dz-image-preview {
+  margin-bottom: 7px;
+}
+.dz-details {
+  padding: 4px 0;
+}
+.dz-remove {
+  text-decoration: none;
+}
+.dz-clickable {
+  text-align: center;
+}
+.dz-button {
+  background: #256EEB;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+/* Media queries */
 @media (max-width:1200px) {
   .container {
       max-width: 960px;

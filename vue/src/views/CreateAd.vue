@@ -5,41 +5,46 @@
       <h2>Create ad</h2>
       <h4>Fill the fields below</h4>
     </div>
+
     <form class="create-form" @submit.prevent="createAd">
-      <label for="title">Title</label>
-      <input type="text" name="title" class="input" placeholder="title" v-model="ad.title">
+      <div class="inputs">
+        <label for="title">Title</label>
+        <input type="text" name="title" class="input" placeholder="title" v-model="ad.title">
 
-      <label for="description">Description</label>
-      <textarea type="text"
-       name="desctiption"
-       class="text-input"
-       rows="7"
-       v-model="ad.description"></textarea>
+        <label for="description">Description</label>
+        <textarea type="text"
+        name="desctiption"
+        class="text-input"
+        rows="7"
+        v-model="ad.description"></textarea>
 
-      <label for="price">Price in $</label>
-      <input type="number" name="price" class="input price-input" placeholder="Address" v-model="ad.price">
+        <label for="price">Price in $</label>
+        <input type="number" name="price" class="input price-input" placeholder="Address" v-model="ad.price">
 
-      <label for="category">Choose a category</label>
-      <select name="category" class="create-form__select" value="Choose" v-model="ad.category">
-        <option
-         v-for="category in categories"
-         :key="category.id"
-         :value="category.id"
-         >{{category.title}}</option>
-        
-      </select>
+        <label for="category">Choose a category</label>
+        <select name="category" class="create-form__select" value="Choose" v-model="ad.category">
+          <option
+          v-for="category in categories"
+          :key="category.id"
+          :value="category.id"
+          >{{category.title}}</option>
+          
+        </select>
 
-      <label for="address">Address</label>
-      <input type="text" name="address" class="input" placeholder="Address" v-model="ad.address">
-      
-      <button class="button create-form__button">Create</button>
+        <label for="address">Address</label>
+        <input type="text" name="address" class="input" placeholder="Address" v-model="ad.address">
+        <button class="button create-form__button">Create</button>
+      </div>
+
+      <div class="dropzone" ref="dropRef"></div>
     </form>
   </div>
 </template>
 
 <script setup>
-import {computed} from 'vue'
+import {computed, ref, onMounted} from 'vue'
 import store from '../store'
+import Dropzone from 'dropzone'
 
 const categories = computed(() => store.state.categories)
 
@@ -49,21 +54,54 @@ const ad = {
   price: 0,
   category: null,
   address: '',
+  images: []
 }
 
-const createAd = () => store.dispatch('createAd', ad)
+const dropRef = ref(null)
 
+onMounted(() => {
+  dropRef.value = new Dropzone(dropRef.value, {
+    url: 'asdsd',
+    autoQueue: false,
+    addRemoveLinks: true,
+    thumbnailWidth: 320,
+    thumbnailHeight: 160,
+    acceptedFiles: 'image/*',
+  })
+})
+
+const createAd = () => {
+  const images = dropRef.value.getAcceptedFiles()
+  for (let img of images) {
+    ad.images.push(img.dataURL)
+  }
+  store.dispatch('createAd', ad)
+}
 </script>
 
 <style scoped>
+.inputs {
+  display: flex;
+  flex-direction: column;
+}
+.dropzone {
+  align-self: flex-start;
+  border-radius: 10px;
+  margin-left: 100px;
+  min-height: 300px;
+  width: 400px;
+  border-style: dashed;
+  border-width: 3px;
+  padding: 20px;
+  cursor: pointer;
+}
+
 label {
   margin-bottom: 5px;
   font-size: 18px;
 }
 .create-form {
   display: flex;
-  flex-direction: column;
-  max-width: 300px;
 }
 .input {
   display: block;
@@ -117,5 +155,16 @@ input[type="number"] {
 input[type="number"]:hover,
 input[type="number"]:focus {
   -moz-appearance: number-input;
+}
+
+@media (max-width: 768px) {
+  .create-form {
+    display: block;
+  }
+  .dropzone {
+    margin: 0;
+    width: auto;
+    height: auto;
+  }
 }
 </style>
