@@ -71,9 +71,10 @@ onMounted(() => {
 })
 
 const createAd = () => {
-  const images = dropRef.value.getAcceptedFiles()
-  for (let img of images) {
-    ad.images.push(img.dataURL)
+  const images = dropRef.value.dropzone.getAcceptedFiles()
+
+  for(let image of images) {
+    ad.images.push(image.dataURL)
   }
   store.dispatch('createAd', ad)
 }

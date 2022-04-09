@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\User;
+use App\Models\Image;
 
 class SingleAdResource extends JsonResource
 {
@@ -22,6 +23,7 @@ class SingleAdResource extends JsonResource
             'price' => $this->price,
             'address' => $this->address,
             'author' => new UserResource(User::findOrFail($this->user_id)),
+            'images' => AdImagesResource::collection(Image::where('ad_id', $this->id)->get()),
             'created_at' => (new \DateTime($this->created_at))->format('d.m H:i'),
         ];
     }

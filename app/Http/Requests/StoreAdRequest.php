@@ -29,6 +29,7 @@ class StoreAdRequest extends FormRequest
             'price' => 'required',
             'category' => 'required|exists:categories,id',
             'address' => 'required',
+            'images' => 'required'
         ];
     }
 }

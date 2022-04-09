@@ -7,6 +7,9 @@ use App\Http\Resources\AdsListResource;
 use App\Http\Resources\SingleAdResource;
 use App\Models\Ad;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
+use App\Models\Image;
+
 
 class AdsController extends Controller
 {
@@ -21,6 +24,9 @@ class AdsController extends Controller
 
         $user = $request->user();
 
+        $images = $data['images'];
+        unset($data['images']);
+
         $ad = Ad::create([
             'title' => $data['title'],
             'description' => $data['description'],
@@ -31,6 +37,14 @@ class AdsController extends Controller
             'user_id' => auth()->id()
         ]);
 
+        foreach($images as $image) {
+            $relativePath = $this->saveImage($image);
+            Image::create([
+                'title' => $relativePath,
+                'ad_id' => $ad->id
+            ]);
+        }
+
         return response([
             'ad' => $ad
         ]);
@@ -39,5 +53,35 @@ class AdsController extends Controller
     public function show(Ad $ad)
     {
         return new SingleAdResource($ad);
+    }
+
+    protected function saveImage($image)
+    {
+        if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
+            // Take out the base64 encoded text without mime type
+            $image = substr($image, strpos($image, ',') + 1);
+            // Get file extension
+            $type = strtolower($type[1]);
+
+            // Check if file is an image
+            if (!in_array($type, ['jpg', 'jpeg', 'png'])) {
+                throw new \Exception('invalid image type');
+            }
+
+            $image = str_replace(' ', '+', $image);
+            $image = base64_decode($image);
+
+            if ($image === false) {
+                throw new \Exception('base64_decode failed');
+            }
+        } else {
+            throw new \Exception('did not match data URI with image data');
+        }
+        $dir = 'images/';
+        $name = Str::random() . '.' . $type;
+
+        $relativePath = $dir . $name;
+        file_put_contents($relativePath, $image);
+        return $relativePath;
     }
 }
