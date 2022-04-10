@@ -33,6 +33,13 @@
 
         <label for="address">Address</label>
         <input type="text" name="address" class="input" placeholder="Address" v-model="ad.address">
+
+        <p v-if="Object.keys(errors).length" class="errors-block">
+          <ul v-for="(field, i) of Object.keys(errors)" :key="i">
+            <li v-for="(error, ind) of errors[field] || []" :key="ind">{{error}}</li>
+          </ul>
+        </p>
+
         <button class="button create-form__button">Create</button>
       </div>
 
@@ -45,7 +52,9 @@
 import {computed, ref, onMounted} from 'vue'
 import store from '../store'
 import Dropzone from 'dropzone'
+import {useRouter} from 'vue-router'
 
+const router = useRouter()
 const dropRef = ref()
 
 onMounted(() => {
@@ -70,13 +79,23 @@ const ad = {
   images: []
 }
 
+const errors = ref({})
+
 const createAd = () => {
   const images = dropRef.value.dropzone.getAcceptedFiles()
 
   for(let image of images) {
-    ad.images.push(image.dataURL)
+    if(!ad.images.includes(image.dataURL)) {
+      ad.images.push(image.dataURL)
+    }
   }
   store.dispatch('createAd', ad)
+   .then(res => {
+     router.push({name: 'single', params: {id: res.data.ad.id}})
+   })
+   .catch(err => {
+     errors.value = err.response.data.error.message
+   })
 }
 </script>
 
@@ -143,6 +162,14 @@ label {
   font-weight: 700;
   color: #ffffff;
   align-self: center;
+}
+
+.errors-block {
+  margin-left: 15px;
+}
+.errors-block ul {
+  padding: 0;
+  color: red;
 }
 
 input[type="number"]::-webkit-outer-spin-button,
