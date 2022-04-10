@@ -3,6 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\Image;
+use Illuminate\Support\Facades\URL;
+
 
 class AdsListResource extends JsonResource
 {
@@ -19,6 +22,7 @@ class AdsListResource extends JsonResource
             'title' => $this->title,
             'price' => $this->price,
             'address' => $this->address,
+            'preview' => URL::to(Image::where('ad_id', $this->id)->value('title')),
             'created_at' => (new \DateTime($this->created_at))->format('d.m H:i'),
         ];
     }

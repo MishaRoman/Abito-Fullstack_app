@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <router-link class="card-link" :to="{name: 'single', params: {id: ad.id}}">
-      <img src="../assets/img/card-image.jpg" class="card-image" />
+      <img :src="ad.preview" class="card-image" />
     </router-link>
     <div class="card-header">
       <router-link class="card-link" :to="{name: 'single', params: {id: ad.id}}">
@@ -17,5 +17,5 @@
 <script setup>
 const { ad } = defineProps({
   ad: Object
-}) 
+})
 </script>

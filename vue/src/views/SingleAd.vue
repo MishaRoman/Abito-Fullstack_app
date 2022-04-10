@@ -6,7 +6,18 @@
     <main class="main main-single">
       <div class="content">
         <h2 class="page-title">{{ad.title}}</h2>
-        <img src="../assets/img/card-image.jpg" class="img">
+        <swiper
+          :modules="modules"
+          :slides-per-view="1"
+          :space-between="50"
+          navigation
+          :pagination="{ clickable: true }"
+          :scrollbar="{ draggable: true }"
+        >
+          <swiper-slide v-for="img in ad.images" :key="img.id">
+            <img :src="img.image_url" class="img">
+          </swiper-slide>
+        </swiper>
 
         <div class="content-text">
           <p>{{ad.description}}</p>
@@ -42,6 +53,15 @@
 import {useRoute} from 'vue-router'
 import {ref, onMounted} from 'vue'
 import store from '../store'
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+
+const modules = [Navigation, Pagination, Scrollbar, A11y]
 
 const route = useRoute()
 

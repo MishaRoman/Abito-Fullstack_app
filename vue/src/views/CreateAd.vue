@@ -46,6 +46,19 @@ import {computed, ref, onMounted} from 'vue'
 import store from '../store'
 import Dropzone from 'dropzone'
 
+const dropRef = ref()
+
+onMounted(() => {
+  dropRef.value = new Dropzone('.dropzone', {
+    url: 'asdsd',
+    autoQueue: false,
+    addRemoveLinks: true,
+    thumbnailWidth: 320,
+    thumbnailHeight: 160,
+    acceptedFiles: 'image/*',
+  })
+})
+
 const categories = computed(() => store.state.categories)
 
 const ad = {
@@ -56,19 +69,6 @@ const ad = {
   address: '',
   images: []
 }
-
-const dropRef = ref(null)
-
-onMounted(() => {
-  dropRef.value = new Dropzone(dropRef.value, {
-    url: 'asdsd',
-    autoQueue: false,
-    addRemoveLinks: true,
-    thumbnailWidth: 320,
-    thumbnailHeight: 160,
-    acceptedFiles: 'image/*',
-  })
-})
 
 const createAd = () => {
   const images = dropRef.value.dropzone.getAcceptedFiles()
