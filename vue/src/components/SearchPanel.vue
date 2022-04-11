@@ -1,8 +1,14 @@
 <template>
   <div class="container">
     <div class="search-panel">
-      <input type="search" class="search-input" placeholder="Search by ads" />
-      <button class="search-button">
+      <input
+       type="text"
+       class="search-input"
+       placeholder="Search by ads"
+       v-model="searchQuery"
+       @keyup.enter="sortBySearch"
+      />
+      <button class="search-button" @click="sortBySearch">
         <svg
           class="search-icon"
           width="15"
@@ -34,5 +40,15 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import {ref} from 'vue'
+import store from '../store'
+
+const searchQuery = ref()
+
+const sortBySearch = () => {
+  store.dispatch('sortBySearch', searchQuery.value)
+}
+
+
 </script>

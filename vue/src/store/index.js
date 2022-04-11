@@ -9,8 +9,17 @@ const store = createStore({
     },
     categories: [],
     ads: [],
+    sortedAds: [],
   },
-  getters: {},
+  getters: {
+    ads(state) {
+      if (state.sortedAds.length) {
+        return state.sortedAds
+      } else {
+        return state.ads
+      }
+    }
+  },
   actions: {
     register({commit}, user) {
       return axiosClient.post('/register', user)
@@ -75,6 +84,12 @@ const store = createStore({
           return res.data
         })
     },
+    sortByCategory({commit}, id) {
+      commit('sortAdsByCategory', id)
+    },
+    sortBySearch({commit}, searchQuery) {
+      commit('sortAdsBySearch', searchQuery)
+    }
   },
   mutations: {
     setUser: (state, user) => {
@@ -93,8 +108,25 @@ const store = createStore({
       state.categories = categories
     },
     setAds: (state, ads) => {
-      state.ads = ads
+      state.ads = ads.data
     },
+    sortAdsByCategory: (state, id) => {
+      if(state.sortedAds.length) {
+        state.sortedAds = state.sortedAds.filter(ad => ad.category_id == id)
+      } else {
+        state.sortedAds = state.ads.filter(ad => ad.category_id == id)
+      }
+    },
+    sortAdsBySearch: (state, searchQuery) => {
+      if(!searchQuery) {
+        return
+      }
+      if(state.sortedAds.length) {
+        state.sortedAds = state.sortedAds.filter(ad => ad.title.toLowerCase().includes(searchQuery.toLowerCase()))
+      } else {
+        state.sortedAds = state.ads.filter(ad => ad.title.toLowerCase().includes(searchQuery.toLowerCase()))
+      }
+    }
   },
 })
 

@@ -44,9 +44,12 @@
         </button>
         <nav class="navbar-menu">
           <ul class="menu">
-            <li class="menu-item"
+            <li
+             class="menu-item"
              v-for="category in categories"
-             :key="category.id">
+             :key="category.id"
+             @click="sortByCategory(category.id)"
+            >
               <a href="#" class="menu-link">{{category.title}}</a>
             </li>
           </ul>
@@ -130,5 +133,9 @@ store.dispatch('getAuthUser')
   .catch(err => {
     console.log('Unauthenticated');
   })
+
+function sortByCategory(id) {
+  store.dispatch('sortByCategory', id)
+}
 
 </script>

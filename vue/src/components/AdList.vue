@@ -4,7 +4,7 @@
       <h2 class="page-title">Recommendations for you</h2>
       <div class="cards">
         <AdCard
-          v-for="ad in ads.data"
+          v-for="ad in ads"
           :key="ad.index"
           :ad="ad"
         />
@@ -18,7 +18,7 @@ import AdCard from './AdCard.vue'
 import store from '../store'
 import { computed } from 'vue'
 
-const ads = computed(() => store.state.ads)
+const ads = computed(() => store.getters.ads)
 
 store.dispatch('getAds')
 
