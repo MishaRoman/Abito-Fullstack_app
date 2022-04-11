@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function() {
 Route::get('/categories', CategoriesController::class);
 Route::get('/ads', [AdsController::class, 'index']);
 Route::get('/ads/{ad}', [AdsController::class, 'show']);
+Route::get('/ads/author/{id}', [AdsController::class, 'getAdsByAuthor']);
 
 // Auth logins
 Route::post('/register', [AuthController::class, 'register']);

@@ -46,10 +46,22 @@
         </div>
       </div>
     </main>
+
+    <div class="recommendations">
+      <h2 class="page-title">Other ads by this author</h2>
+      <div class="cards">
+        <AdCard
+          v-for="ad in otherAds"
+          :key="ad.id"
+          :ad="ad"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
+import AdCard from '../components/AdCard.vue'
 import {useRoute} from 'vue-router'
 import {ref, onMounted} from 'vue'
 import store from '../store'
@@ -71,6 +83,7 @@ const ad = ref({
   address: '',
   price: '',
   author: {
+    id: null,
     name: '',
     phone_number: null,
     image_url: '',
@@ -81,14 +94,21 @@ const ad = ref({
 store.dispatch('getAd', route.params.id)
   .then(res => {
     ad.value = res.data
+
+    store.dispatch('getAdsByAuthor', ad.value.author.id)
+      .then(res => {
+        otherAds.value = res.data
+      })
   })
 
 const phoneNumBtn = ref(null)
 
 onMounted(() => {
   phoneNumBtn.value.addEventListener('click', () => phoneNumBtn.value.innerText = ad.value.author.phone_number)
+  
 });
 
+const otherAds = ref()
 
 </script>
 
@@ -97,5 +117,8 @@ onMounted(() => {
   font-size: 14px;
   line-height: 16px;
   color: #999999;
+}
+.recommendations {
+  margin-top: 20px;
 }
 </style>

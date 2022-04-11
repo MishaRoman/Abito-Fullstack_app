@@ -55,6 +55,12 @@ class AdsController extends Controller
         return new SingleAdResource($ad);
     }
 
+    public function getAdsByAuthor($id)
+    {
+        $ads = Ad::where('user_id', $id)->get();
+        return AdsListResource::collection($ads);
+    }
+
     protected function saveImage($image)
     {
         if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {

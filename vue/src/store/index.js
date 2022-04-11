@@ -72,6 +72,12 @@ const store = createStore({
           return res.data
         })
     },
+    getAdsByAuthor({commit}, id) {
+      return axiosClient.get(`/ads/author/${id}`)
+        .then(res => {
+          return res.data
+        })
+    },
     getAuthUser({commit}) {
       return axiosClient.get('/user')
         .then((res) => {
@@ -89,7 +95,8 @@ const store = createStore({
     },
     sortBySearch({commit}, searchQuery) {
       commit('sortAdsBySearch', searchQuery)
-    }
+    },
+
   },
   mutations: {
     setUser: (state, user) => {
