@@ -48,4 +48,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Ad::class);
     }
+
+    public function favorites()
+    {
+         return $this->belongsToMany(Ad::class, 'favorites', 'user_id', 'ad_id')->withTimeStamps();
+    }
 }

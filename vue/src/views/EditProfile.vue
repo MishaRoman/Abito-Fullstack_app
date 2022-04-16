@@ -73,10 +73,6 @@
         </div>
       </div>
     </div>
-    
-    <div class="logout">
-      <button class="logout-button" @click.prevent="logout">Logout</button>
-    </div>
   </div>
 </template>
 
@@ -142,11 +138,7 @@ function updateUser () {
     })
 }
 
-const logout = () => {
-  if(confirm('Are you sure you want to logout?')) {
-    store.dispatch('logout').then(router.push('/'))
-  }
-}
+
 </script>
 
 <style scoped>
@@ -222,20 +214,7 @@ const logout = () => {
   opacity: 0.5;
   cursor: default !important;
 }
-.logout {
-  text-align: center;
-  margin-top: 30px;
-}
-.logout-button {
-  background: red;
-  color: #fff;
-  border-radius: 15px;
-  padding: 12px 35px;
-  font-size: 18px;
-  cursor: pointer;
-  text-decoration: none;
-  border: none;
-}
+
 .save {
   text-align: center;
 }

@@ -24,6 +24,9 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::controller(AdsController::class)->group(function () {
         Route::post('/ads', 'store');
     });
+    Route::get('/favorites', [AdsController::class, 'favorites']);
+    Route::post('/favorite/{ad}', [AdsController::class, 'favorite']);
+    Route::post('/unfavorite/{ad}', [AdsController::class, 'unfavorite']);
 });
 
 Route::get('/categories', CategoriesController::class);

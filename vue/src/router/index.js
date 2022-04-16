@@ -4,6 +4,7 @@ import Index from '../views/Index.vue'
 import SingleAd from '../views/SingleAd.vue'
 import CreateAd from '../views/CreateAd.vue'
 import EditProfile from '../views/EditProfile.vue'
+import Favorites from '../views/Favorites.vue'
 import store from "../store";
 
 const routes = [
@@ -27,6 +28,12 @@ const routes = [
         path: '/create',
         meta: {requiresAuth: true},
         component: CreateAd
+      },
+      {
+        name: 'favorites',
+        path: '/favorites',
+        meta: {requiresAuth: true},
+        component: Favorites
       },
       {
         name: 'editProfile',

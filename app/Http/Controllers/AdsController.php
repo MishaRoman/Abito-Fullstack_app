@@ -61,6 +61,27 @@ class AdsController extends Controller
         return AdsListResource::collection($ads);
     }
 
+    public function favorites()
+    {
+        $user = auth()->user();
+        $ads = $user->favorites;
+        return AdsListResource::collection($ads);
+    }
+
+    public function favorite(Ad $ad)
+    {
+        $user = auth()->user();
+        $user->favorites()->attach($ad->id);
+        return 'success';
+    }
+
+    public function unfavorite(Ad $ad)
+    {
+        $user = auth()->user();
+        $user->favorites()->detach($ad->id);
+        return 'success';
+    }
+
     protected function saveImage($image)
     {
         if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {

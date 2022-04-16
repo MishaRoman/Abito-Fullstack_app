@@ -10,6 +10,7 @@ const store = createStore({
     categories: [],
     ads: [],
     sortedAds: [],
+    favorites: [],
   },
   getters: {
     ads(state) {
@@ -90,6 +91,24 @@ const store = createStore({
           return res.data
         })
     },
+    getFavorites({commit}) {
+      return axiosClient.get('/favorites')
+        .then(res => {
+          commit('setFavorites', res.data)
+        })
+    },
+    addToFavorites({commit}, id) {
+      return axiosClient.post(`/favorite/${id}`)
+        .then(res => {
+          console.log(res);
+        })
+    },
+    removeFromFavorites({commit}, id) {
+      return axiosClient.post(`/unfavorite/${id}`)
+        .then(res => {
+          console.log(res);
+        })
+    },
     sortByCategory({commit}, id) {
       commit('sortAdsByCategory', id)
     },
@@ -113,6 +132,9 @@ const store = createStore({
     },
     setCategories: (state, categories) => {
       state.categories = categories
+    },
+    setFavorites: (state, favorites) => {
+      state.favorites = favorites.data
     },
     setAds: (state, ads) => {
       state.ads = ads.data

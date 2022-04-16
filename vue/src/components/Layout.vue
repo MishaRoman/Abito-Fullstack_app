@@ -56,10 +56,31 @@
         </nav>
 
         <div class="header_button-group">
-          <router-link v-if="userToken" :to="{name: 'editProfile'}" @click="isMenuOpen = false">
-            <img :src="user.image_url" alt="" class="header-avatar"/>
-          </router-link>
+          <img v-if="userToken" :src="user.image_url" class="header-avatar" @click="areDetailsVisible = !areDetailsVisible"/>
           <a class="button button-link" @click="openAuthModal" v-else>Login and registration</a>
+
+          <div class="details" v-if="areDetailsVisible">
+            <ul>
+              <li>
+                <router-link
+                 :to="{name: 'editProfile'}"
+                 class="details-button button-link"
+                 @click="[areDetailsVisible, isMenuOpen] = [false, false]"
+                 >Profile Settings
+                </router-link>
+              </li>
+              <li>
+                <router-link
+                 :to="{name: 'favorites'}"
+                 class="details-button button-link"
+                 @click="[areDetailsVisible, isMenuOpen] = [false, false]"
+                 >Favorites
+                </router-link>
+              </li>
+              <li @click="logout"><span class="details-button logout-button button-link">Logout</span></li>
+            </ul>
+          </div>
+
           <router-link
            class="button button-primary"
            :to="{name: 'create'}"
@@ -105,8 +126,10 @@
 import AuthModal from './AuthModal.vue'
 import {ref, computed} from 'vue'
 import {useStore} from 'vuex'
+import {useRouter} from 'vue-router'
 
 const store = useStore()
+const router = useRouter()
 
 store.dispatch('getCategories')
 
@@ -114,6 +137,7 @@ const categories = computed(() => store.state.categories)
 
 const showAuthModal = ref(false)
 const isMenuOpen = ref(false)
+const areDetailsVisible = ref(false)
 
 const openAuthModal = () => showAuthModal.value = true
 const closeAuthModal = () => showAuthModal.value = false
@@ -138,4 +162,41 @@ function sortByCategory(id) {
   store.dispatch('sortByCategory', id)
 }
 
+const logout = () => {
+  areDetailsVisible.value = false
+  isMenuOpen.value = false
+  if(confirm('Are you sure you want to logout?')) {
+    store.dispatch('logout').then(router.push('/'))
+  }
+}
+
 </script>
+
+<style scoped>
+.details {
+  position: absolute;
+  display: block;
+  top: 75px;
+  z-index: 5;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #0A143A;
+  border-radius: 6px;
+}
+.details ul {
+  margin: 0;
+  padding-left: 0;
+}
+.details ul li {
+  list-style: none;
+}
+.details-button {
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+.logout-button {
+  color: red;
+}
+</style>
