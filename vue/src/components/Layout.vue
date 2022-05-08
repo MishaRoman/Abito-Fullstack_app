@@ -77,6 +77,14 @@
                  >Favorites
                 </router-link>
               </li>
+              <li>
+                <router-link
+                 :to="{name: 'myAds'}"
+                 class="details-button button-link"
+                 @click="[areDetailsVisible, isMenuOpen] = [false, false]"
+                 >My Ads
+                </router-link>
+              </li>
               <li @click="logout"><span class="details-button logout-button button-link">Logout</span></li>
             </ul>
           </div>

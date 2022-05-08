@@ -64,7 +64,6 @@ const store = createStore({
       return axiosClient.get('/ads')
         .then((res) => {
           commit('setAds', res.data)
-          return res
         })
     },
     getAd({commit}, id) {
@@ -85,6 +84,12 @@ const store = createStore({
           return res.data.data
         })
     },
+    getUserAds({commit}) {
+      return axiosClient.get('/user/ads')
+        .then((res) => {
+          return res.data
+        })
+    },
     updateUser({commit}, data) {
       return axiosClient.post('/user/update', data)
         .then(res => {
@@ -100,13 +105,13 @@ const store = createStore({
     addToFavorites({commit}, id) {
       return axiosClient.post(`/favorite/${id}`)
         .then(res => {
-          console.log(res);
+          return res
         })
     },
     removeFromFavorites({commit}, id) {
       return axiosClient.post(`/unfavorite/${id}`)
         .then(res => {
-          console.log(res);
+          return res
         })
     },
     sortByCategory({commit}, id) {

@@ -82,6 +82,13 @@ class AdsController extends Controller
         return 'success';
     }
 
+    public function userAds()
+    {
+        $user = auth()->user();
+        $ads = $user->ads;
+        return AdsListResource::collection($ads);;
+    }
+
     protected function saveImage($image)
     {
         if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
