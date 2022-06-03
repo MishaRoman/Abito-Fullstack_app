@@ -150,6 +150,7 @@ const register = (e) => {
   store.dispatch('register', user)
    .then(() => {
      closeAuthModal()
+     location.reload();
    })
    .catch(err => {
     signupErrors.value = err.response.data.error.message
@@ -161,6 +162,7 @@ const login = (e) => {
   store.dispatch('login', {'email': user.email, 'password': user.password})
    .then(() => {
     closeAuthModal()
+    location.reload();
    })
    .catch(err => {
     loginErrors.value = err.response.data.error.message

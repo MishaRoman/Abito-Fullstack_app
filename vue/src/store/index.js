@@ -66,14 +66,20 @@ const store = createStore({
           commit('setAds', res.data)
         })
     },
+    getAuthAds({commit}) {
+      return axiosClient.get('/auth/ads')
+        .then((res) => {
+          commit('setAds', res.data)
+        })
+    },
     getAd({commit}, id) {
       return axiosClient.get(`/ads/${id}`)
         .then((res) => {
           return res.data
         })
     },
-    getAdsByAuthor({commit}, id) {
-      return axiosClient.get(`/ads/author/${id}`)
+    getAdsByAuthor({commit}, params) {
+      return axiosClient.get(`/ads/author/${params[0]}/${params[1]}`)
         .then(res => {
           return res.data
         })

@@ -55,9 +55,9 @@ class AdsController extends Controller
         return new SingleAdResource($ad);
     }
 
-    public function getAdsByAuthor($id)
+    public function getAdsByAuthor($authorId, $adId)
     {
-        $ads = Ad::where('user_id', $id)->get();
+        $ads = Ad::where('user_id', $authorId)->where('id', '!=', $adId)->get();
         return AdsListResource::collection($ads);
     }
 

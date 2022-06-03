@@ -22,6 +22,10 @@ import { computed } from 'vue'
 
 const ads = computed(() => store.getters.ads)
 
-store.dispatch('getAds')
+if (store.state.user.token) {
+  store.dispatch('getAuthAds')
+} else {
+  store.dispatch('getAds')
+}
 
 </script>

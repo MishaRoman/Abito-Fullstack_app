@@ -63,7 +63,7 @@
 <script setup>
 import AdCard from '../components/AdCard.vue'
 import {useRoute} from 'vue-router'
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, watch} from 'vue'
 import store from '../store'
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
@@ -78,6 +78,7 @@ const modules = [Navigation, Pagination, Scrollbar, A11y]
 const route = useRoute()
 
 const ad = ref({
+  id: null,
   title: '',
   description: '',
   address: '',
@@ -91,22 +92,27 @@ const ad = ref({
   }
 })
 
-store.dispatch('getAd', route.params.id)
-  .then(res => {
-    ad.value = res.data
+function getAd() {
+  store.dispatch('getAd', route.params.id)
+    .then(res => {
+      ad.value = res.data
 
-    store.dispatch('getAdsByAuthor', ad.value.author.id)
-      .then(res => {
-        otherAds.value = res.data
-      })
-  })
-
+      store.dispatch('getAdsByAuthor', [ad.value.author.id, ad.value.id])
+        .then(res => {
+          otherAds.value = res.data
+        })
+    })
+}
+getAd()
 const phoneNumBtn = ref(null)
 
 onMounted(() => {
   phoneNumBtn.value.addEventListener('click', () => phoneNumBtn.value.innerText = ad.value.author.phone_number)
-  
 });
+
+watch(route, (from, to) => {
+  getAd()
+})
 
 const otherAds = ref()
 
