@@ -6,6 +6,7 @@ import CreateAd from '../views/CreateAd.vue'
 import EditProfile from '../views/EditProfile.vue'
 import Favorites from '../views/Favorites.vue'
 import MyAds from '../views/MyAds.vue'
+import UserAds from '../views/UserAds.vue'
 import store from "../store";
 
 const routes = [
@@ -23,6 +24,11 @@ const routes = [
         name: 'single',
         path: '/ad/:id',
         component: SingleAd
+      },
+      {
+        name: 'userAds',
+        path: '/user/:id',
+        component: UserAds
       },
       {
         name: 'create',

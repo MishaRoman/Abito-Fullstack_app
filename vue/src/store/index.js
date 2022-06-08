@@ -90,7 +90,13 @@ const store = createStore({
           return res.data.data
         })
     },
-    getUserAds({commit}) {
+    getUserAds({commit}, userId) {
+      return axiosClient.get(`/user/${userId}`)
+        .then((res) => {
+          return res.data
+        })
+    },
+    getAuthUserAds({commit}) {
       return axiosClient.get('/user/ads')
         .then((res) => {
           return res.data

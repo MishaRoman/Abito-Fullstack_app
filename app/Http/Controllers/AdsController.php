@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAdRequest;
 use App\Http\Resources\AdsListResource;
 use App\Http\Resources\SingleAdResource;
+use App\Http\Resources\UserResource;
 use App\Models\Ad;
+use App\Models\User;
+use App\Models\Image;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
-use App\Models\Image;
 
 
 class AdsController extends Controller
@@ -82,11 +84,27 @@ class AdsController extends Controller
         return 'success';
     }
 
-    public function userAds()
+    public function myAds()
     {
         $user = auth()->user();
         $ads = $user->ads;
         return AdsListResource::collection($ads);;
+    }
+
+    public function userAds($id)
+    {
+        $user = User::where('id', $id)->firstOrFail();
+
+        $ads = AdsListResource::collection($user->ads);
+        $user = new UserResource($user);
+
+        $json = [
+            'data' => [
+                'ads' => $ads,
+                'user' => $user
+            ]
+        ];
+        return response()->json($json);
     }
 
     protected function saveImage($image)

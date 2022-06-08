@@ -25,12 +25,13 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('auth/ads', 'index');
         Route::post('/ads', 'store');
     });
-    Route::get('/user/ads', [AdsController::class, 'userAds']);
+    Route::get('/user/ads', [AdsController::class, 'myAds']);
     Route::get('/favorites', [AdsController::class, 'favorites']);
     Route::post('/favorite/{ad}', [AdsController::class, 'favorite']);
     Route::post('/unfavorite/{ad}', [AdsController::class, 'unfavorite']);
 });
 
+Route::get('/user/{id}', [AdsController::class, 'userAds']);
 Route::get('/categories', CategoriesController::class);
 Route::get('/ads', [AdsController::class, 'index']);
 Route::get('/ads/{ad}', [AdsController::class, 'show']);

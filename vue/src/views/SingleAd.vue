@@ -28,13 +28,15 @@
       </div>
       <div class="author">
         <strong class="single-price">{{ad.price}} $</strong>
-        <div class="author-wrapper">
-          <div class="author-info">
-            <span class="author-name">{{ad.author.name}}</span>
-            <span class="author-status">Member since {{ad.author.member_since}}</span>
+        <router-link class="card-link" :to="{name: 'userAds', params: {id: ad.author.id}}">
+          <div class="author-wrapper">
+            <div class="author-info">
+              <span class="author-name">{{ad.author.name}}</span>
+              <span class="author-status">Member since {{ad.author.member_since}}</span>
+            </div>
+            <img :src="ad.author.image_url" class="author-avatar" />
           </div>
-          <img :src="ad.author.image_url" class="author-avatar" />
-        </div>
+        </router-link>
 
         <div class="button-group">
           <button class="button button-block button-primary" ref="phoneNumBtn">
@@ -84,7 +86,7 @@ const ad = ref({
   address: '',
   price: '',
   author: {
-    id: null,
+    id: 0,
     name: '',
     phone_number: null,
     image_url: '',
@@ -111,7 +113,9 @@ onMounted(() => {
 });
 
 watch(route, (from, to) => {
-  getAd()
+  if (to.name == 'single') {
+    getAd()
+  }
 })
 
 const otherAds = ref()
