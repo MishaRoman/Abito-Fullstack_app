@@ -10,6 +10,7 @@ const store = createStore({
     categories: [],
     ads: [],
     sortedAds: [],
+    totalPages: null,
     favorites: [],
   },
   getters: {
@@ -60,14 +61,16 @@ const store = createStore({
         })
     },
 
-    getAds({commit}) {
-      return axiosClient.get('/ads')
+    getAds({commit}, page) {
+      return axiosClient.get(`/ads?page=${page}`)
         .then((res) => {
           commit('setAds', res.data)
         })
     },
-    getAuthAds({commit}) {
-      return axiosClient.get('/auth/ads')
+
+    // get ads but through middleware auth, if you don't do it likes will not displaying correct
+    getAuthAds({commit}, page) {
+      return axiosClient.get(`/auth/ads?page=${page}`)
         .then((res) => {
           commit('setAds', res.data)
         })
@@ -154,7 +157,8 @@ const store = createStore({
       state.favorites = favorites.data
     },
     setAds: (state, ads) => {
-      state.ads = ads.data
+      state.ads = [...state.ads, ...ads.data]
+      state.totalPages = ads.meta.last_page
     },
     sortAdsByCategory: (state, id) => {
       if(state.sortedAds.length) {

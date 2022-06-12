@@ -17,7 +17,7 @@ class AdsController extends Controller
 {
     public function index()
     {
-        return AdsListResource::collection(Ad::get());
+        return AdsListResource::collection(Ad::paginate(16));
     }
 
     public function store(StoreAdRequest $request)
