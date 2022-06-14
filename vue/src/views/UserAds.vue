@@ -103,4 +103,22 @@ onMounted(() => {
 .button-block {
   width: 77%;
 }
+
+@media (max-width: 576px) {
+  .main-wrapper {
+    flex-direction: column;
+  }
+  .sidebar {
+    max-height: 100%;
+    text-align: center;
+  }
+  .button-group {
+    display: flex;
+    align-items: center;
+  }
+  .img-wrapper {
+    width: auto;
+    margin: auto;
+  }
+}
 </style>
