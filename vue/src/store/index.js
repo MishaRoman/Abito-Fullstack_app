@@ -8,14 +8,20 @@ const store = createStore({
       token: sessionStorage.getItem('TOKEN')
     },
     categories: [],
-    ads: [],
-    sortedAds: [],
+    ads: {
+      meta: [],
+      loading: false,
+      data: [],
+    },
+    sortedAds: {
+      data: []
+    },
     totalPages: null,
     favorites: [],
   },
   getters: {
     ads(state) {
-      if (state.sortedAds.length) {
+      if (state.sortedAds.data.length) {
         return state.sortedAds
       } else {
         return state.ads
@@ -62,16 +68,20 @@ const store = createStore({
     },
 
     getAds({commit}, page) {
+      commit('setAdsLoading', true)
       return axiosClient.get(`/ads?page=${page}`)
         .then((res) => {
+          commit('setAdsLoading', false)
           commit('setAds', res.data)
         })
     },
 
     // get ads but through middleware auth, if you don't do it likes will not displaying correct
     getAuthAds({commit}, page) {
+      commit('setAdsLoading', true)
       return axiosClient.get(`/auth/ads?page=${page}`)
         .then((res) => {
+          commit('setAdsLoading', false)
           commit('setAds', res.data)
         })
     },
@@ -157,26 +167,29 @@ const store = createStore({
       state.favorites = favorites.data
     },
     setAds: (state, ads) => {
-      state.ads = [...state.ads, ...ads.data]
-      state.totalPages = ads.meta.last_page
+      state.ads.data = [...state.ads.data, ...ads.data]
+      state.ads.meta = ads.meta
     },
     sortAdsByCategory: (state, id) => {
-      if(state.sortedAds.length) {
-        state.sortedAds = state.sortedAds.filter(ad => ad.category_id == id)
+      if(state.sortedAds.data.length) {
+        state.sortedAds.data = state.sortedAds.data.filter(ad => ad.category_id == id)
       } else {
-        state.sortedAds = state.ads.filter(ad => ad.category_id == id)
+        state.sortedAds.data = state.ads.data.filter(ad => ad.category_id == id)
       }
     },
     sortAdsBySearch: (state, searchQuery) => {
       if(!searchQuery) {
         return
       }
-      if(state.sortedAds.length) {
-        state.sortedAds = state.sortedAds.filter(ad => ad.title.toLowerCase().includes(searchQuery.toLowerCase()))
+      if(state.sortedAds.data.length) {
+        state.sortedAds.data = state.sortedAds.data.filter(ad => ad.title.toLowerCase().includes(searchQuery.toLowerCase()))
       } else {
-        state.sortedAds = state.ads.filter(ad => ad.title.toLowerCase().includes(searchQuery.toLowerCase()))
+        state.sortedAds.data = state.ads.data.filter(ad => ad.title.toLowerCase().includes(searchQuery.toLowerCase()))
       }
-    }
+    },
+    setAdsLoading: (state, loading) => {
+      state.ads.loading = loading;
+    },
   },
 })
 

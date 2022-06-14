@@ -3,15 +3,16 @@
   <div class="container page-content">
     <main class="main">
       <h2 class="page-title">Recommendations for you</h2>
-      <div class="cards">
+      <div class="spinner" v-if="ads.loading && !ads.data.length"></div>
+      <div class="cards" v-else>
         <AdCard
-          v-for="ad in ads"
+          v-for="ad in ads.data"
           :key="ad.index"
           :ad="ad"
         />
       </div>
     </main>
-    <div class="observer" ref="obs"></div>
+    <div class="observer" ref="obs" :class="ads.loading && ads.data.length ? 'spinner': '' "></div>
   </div>
 </template>
 
@@ -22,10 +23,10 @@ import store from '../store'
 import { computed, onMounted, ref } from 'vue'
 
 const ads = computed(() => store.getters.ads)
+const totalPages = computed(() => store.state.ads.meta.last_page)
 
 const page = ref(0)
 const obs = ref(null)
-const totalPages = computed(() => store.state.totalPages)
 
 const loadAds = (page) => {
   page.value += 1
@@ -68,5 +69,18 @@ onMounted(() => {
 .observer {
   height: 30px;
   margin-bottom: 3px;
+  text-align: center;
+}
+.spinner {
+  width: 2em;
+  height: 2em;
+  border-top: 0.8em solid #256EEB;
+  border-right: 0.8em solid transparent;
+  border-radius: 50%;
+  margin: auto;
+  animation: spinner-23543608 0.6s linear infinite;
+}
+@keyframes spinner {
+  100% { transform: rotate(360deg) }
 }
 </style>
