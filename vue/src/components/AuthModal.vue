@@ -49,8 +49,9 @@
           name="password"
           v-model="user.password"
         /><br />
-        <button class="button btn-submit" role="button" type="submit">
+        <button class="button btn-submit" role="button" type="submit" :disabled="loading">
           Log in
+          <span class="loading" v-if="loading"></span>
         </button>
         <div v-if="Object.keys(loginErrors).length">
           <ul v-for="(field, i) of Object.keys(loginErrors)" :key="i">
@@ -81,7 +82,7 @@
         <br />
         <input
          class="form-input"
-         type="tel"
+         type="number"
          placeholder="Phone number"
          name="phone_number"
          v-model.number="user.phone_number"
@@ -104,8 +105,9 @@
           v-model="user.password_confirmation"
           required
         /><br />
-        <button class="button btn-submit" role="button" type="submit">
+        <button class="button btn-submit" role="button" type="submit" :disabled="loading">
           Register
+          <span class="loading" v-if="loading"></span>
         </button>
         <div v-if="Object.keys(signupErrors).length">
           <ul v-for="(field, i) of Object.keys(signupErrors)" :key="i">
@@ -137,6 +139,8 @@ function openAuthModal() {
 let loginErrors = ref({})
 let signupErrors = ref({})
 
+const loading = ref(false)
+
 const user = {
   name: '',
   email: '',
@@ -147,25 +151,31 @@ const user = {
 
 const register = (e) => {
   e.preventDefault()
+  loading.value = true
   store.dispatch('register', user)
    .then(() => {
+     loading.value = false
      closeAuthModal()
      location.reload();
    })
    .catch(err => {
+    loading.value = false
     signupErrors.value = err.response.data.error.message
    })
 }
 
 const login = (e) => {
   e.preventDefault()
+  loading.value = true
   store.dispatch('login', {'email': user.email, 'password': user.password})
    .then(() => {
+    loading.value = false
     closeAuthModal()
     location.reload();
    })
    .catch(err => {
-    loginErrors.value = err.response.data.error.message
+     loginErrors.value = err.response.data.error.message
+     loading.value = false
    })
 }
 
@@ -174,5 +184,27 @@ const login = (e) => {
 <style scoped>
 li {
   color: red
+}
+.loading {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 5px;
+  border: 4px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+}
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
+}
+button:disabled {
+  opacity: 0.5;
 }
 </style>
