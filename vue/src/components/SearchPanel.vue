@@ -42,15 +42,12 @@
 
 <script setup>
 import {ref} from 'vue'
-import store from '../store'
+import {useRouter} from 'vue-router'
 
+const router = useRouter()
 const searchQuery = ref(null)
 
-const emit = defineEmits(['getFilteredAds'])
-
 function getFilteredAds() {
-  emit('getFilteredAds', searchQuery.value)
+  router.push({name: 'filteredAds', params: {query: searchQuery.value}})
 }
-
-
 </script>

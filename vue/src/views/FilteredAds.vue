@@ -1,71 +1,75 @@
 <template>
   <SearchPanel/>
   <div class="container page-content">
-    <main class="main">
-      <h2 class="page-title">Recommendations for you</h2>
-      <div class="spinner" v-if="ads.loading && !ads.length"></div>
-      <div class="cards" v-else>
-        <AdCard
-          v-for="ad in ads"
-          :key="ad.index"
-          :ad="ad"
-        />
-      </div>
-    </main>
-    <div class="observer" ref="obs" :class="ads.loading && ads.length ? 'spinner': '' "></div>
+    <h2 class="page-title" ref="title"></h2>
+    <div class="cards">
+      <AdCard 
+        v-for="ad in ads"
+        :key="ad.id"
+        :ad="ad"
+      />
+    </div>
+    <div class="observer" ref="obs" :class="ads.loading && ads.data.length ? 'spinner': '' "></div>
   </div>
 </template>
 
 <script setup>
-import SearchPanel from '../components/SearchPanel.vue'
 import AdCard from '../components/AdCard.vue'
+import SearchPanel from '../components/SearchPanel.vue'
+import {ref, onMounted, computed} from 'vue'
+import {useRoute} from 'vue-router'
 import store from '../store'
-import { computed, onMounted, ref } from 'vue'
 
+const route = useRoute()
 const ads = computed(() => store.state.ads.data)
 const totalPages = computed(() => store.state.ads.meta.last_page)
 
+const title = ref('')
+
 const page = ref(1)
 const obs = ref(null)
+const searchQuery = ref(null)
 
-const loadAds = () => {
+const loadAds = (query) => {
   page.value = 1
   if (store.state.user.token) {
-    store.dispatch('getAuthAds')
+    store.dispatch('getAuthAds', query)
   } else {
-    store.dispatch('getAds')
+    store.dispatch('getAds', query)
   }
 }
 
-const loadMoreAds = (page) => {
+function loadMoreAds(page, query) {
   page.value += 1
   if (store.state.user.token) {
     store.dispatch('getMoreAuthAds', {params: {
       page: page.value,
+      query: query
     }})
   } else {
     store.dispatch('getMoreAds', {params: {
       page: page.value,
+      query: query
     }})
   }
 }
 
 onMounted(() => {
-  loadAds()
-
+  searchQuery.value = route.params.query;
+  loadAds(searchQuery.value)
+  
   const options = {
     rootMargin: '0px',
     threshold: 1.0
   }
   const callback = (entries, observer) => {
     if (entries[0].isIntersecting && page.value <= totalPages.value) {
-      loadMoreAds(page)
+      loadMoreAds(page, searchQuery.value)
     }
   };
   const observer = new IntersectionObserver(callback, options);
   observer.observe(obs.value)
 })
-
 
 </script>
 

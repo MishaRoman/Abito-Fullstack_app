@@ -13,20 +13,11 @@ const store = createStore({
       loading: false,
       data: [],
     },
-    sortedAds: {
-      data: []
-    },
     totalPages: null,
     favorites: [],
   },
   getters: {
-    ads(state) {
-      if (state.sortedAds.data.length) {
-        return state.sortedAds
-      } else {
-        return state.ads
-      }
-    }
+    
   },
   actions: {
     register({commit}, user) {
@@ -170,9 +161,6 @@ const store = createStore({
           return res
         })
     },
-    sortByCategory({commit}, id) {
-      commit('sortAdsByCategory', id)
-    },
   },
   mutations: {
     setUser: (state, user) => {
@@ -199,13 +187,6 @@ const store = createStore({
     },
     setMoreAds: (state, ads) => {
       state.ads.data = [...state.ads.data, ...ads.data]
-    },
-    sortAdsByCategory: (state, id) => {
-      if(state.sortedAds.data.length) {
-        state.sortedAds.data = state.sortedAds.data.filter(ad => ad.category_id == id)
-      } else {
-        state.sortedAds.data = state.ads.data.filter(ad => ad.category_id == id)
-      }
     },
     setAdsLoading: (state, loading) => {
       state.ads.loading = loading;

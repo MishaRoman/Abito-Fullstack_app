@@ -48,9 +48,12 @@
              class="menu-item"
              v-for="category in categories"
              :key="category.id"
-             @click="sortByCategory(category.id)"
             >
-              <a href="#" class="menu-link">{{category.title}}</a>
+              <router-link
+               class="menu-link"
+               :to="{name: 'filteredAdsWithCategory', params: {category: category.slug}}"
+               >{{category.title}}
+              </router-link>
             </li>
           </ul>
         </nav>
@@ -165,10 +168,6 @@ store.dispatch('getAuthUser')
   .catch(err => {
     console.log('Unauthenticated');
   })
-
-function sortByCategory(id) {
-  store.dispatch('sortByCategory', id)
-}
 
 const logout = () => {
   areDetailsVisible.value = false
