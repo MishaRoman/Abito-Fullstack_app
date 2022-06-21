@@ -58,11 +58,12 @@ const store = createStore({
         })
     },
 
-    getAds({commit}, query) {
+    getAds({commit}, {params}) {
       commit('setAdsLoading', true)
       return axiosClient.get('/ads', {params: {
-        page: 1,
-        query: query,
+        page: params.page,
+        query: params.query,
+        category: params.category
       }})
         .then((res) => {
           commit('setAdsLoading', false)
@@ -71,11 +72,12 @@ const store = createStore({
     },
 
     // get ads but through middleware auth, if you don't do it likes will not displaying correct
-    getAuthAds({commit}, query) {
+    getAuthAds({commit}, {params}) {
       commit('setAdsLoading', true)
       return axiosClient.get('/auth/ads', {params: {
-        page: 1,
-        query: query,
+        page: params.page,
+        query: params.query,
+        category: params.category
       }})
         .then((res) => {
           commit('setAdsLoading', false)
@@ -87,7 +89,8 @@ const store = createStore({
       commit('setAdsLoading', true)
       return axiosClient.get('/ads', {params: {
         page: params.page,
-        query: params.query
+        query: params.query,
+        category: params.category
       }})
         .then((res) => {
           commit('setAdsLoading', false)
@@ -99,7 +102,8 @@ const store = createStore({
       commit('setAdsLoading', true)
       return axiosClient.get('/auth/ads', {params: {
         page: params.page,
-        query: params.query
+        query: params.query,
+        category: params.category
       }})
         .then((res) => {
           commit('setAdsLoading', false)

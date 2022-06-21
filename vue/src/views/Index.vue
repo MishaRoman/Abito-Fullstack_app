@@ -31,9 +31,9 @@ const obs = ref(null)
 const loadAds = () => {
   page.value = 1
   if (store.state.user.token) {
-    store.dispatch('getAuthAds')
+    store.dispatch('getAuthAds', {params: {page: 1}})
   } else {
-    store.dispatch('getAds')
+    store.dispatch('getAds', {params: {page: 1}})
   }
 }
 

@@ -27,44 +27,58 @@ const totalPages = computed(() => store.state.ads.meta.last_page)
 const title = ref('')
 
 const page = ref(1)
-const obs = ref(null)
 const searchQuery = ref(null)
+const category = ref(null)
 
-const loadAds = (query) => {
+const obs = ref(null)
+
+const loadAds = () => {
   page.value = 1
   if (store.state.user.token) {
-    store.dispatch('getAuthAds', query)
+    store.dispatch('getAuthAds', {params: {
+      page: 1,
+      query: searchQuery.value,
+      category: category.value
+    }})
   } else {
-    store.dispatch('getAds', query)
+    store.dispatch('getAds', {params: {
+      page: 1,
+      query: searchQuery.value,
+      category: category.value
+    }})
   }
 }
 
-function loadMoreAds(page, query) {
+const loadMoreAds = () => {
   page.value += 1
   if (store.state.user.token) {
     store.dispatch('getMoreAuthAds', {params: {
       page: page.value,
-      query: query
+      query: searchQuery.value,
+      category: category.value
     }})
   } else {
     store.dispatch('getMoreAds', {params: {
       page: page.value,
-      query: query
+      query: searchQuery.value,
+      category: category.value
     }})
   }
 }
 
 onMounted(() => {
   searchQuery.value = route.params.query;
-  loadAds(searchQuery.value)
+  category.value = route.params.category;
   
+  loadAds()
+
   const options = {
     rootMargin: '0px',
     threshold: 1.0
   }
   const callback = (entries, observer) => {
     if (entries[0].isIntersecting && page.value <= totalPages.value) {
-      loadMoreAds(page, searchQuery.value)
+      loadMoreAds()
     }
   };
   const observer = new IntersectionObserver(callback, options);

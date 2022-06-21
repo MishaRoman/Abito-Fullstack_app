@@ -6,9 +6,12 @@ use App\Http\Requests\StoreAdRequest;
 use App\Http\Resources\AdsListResource;
 use App\Http\Resources\SingleAdResource;
 use App\Http\Resources\UserResource;
+
 use App\Models\Ad;
 use App\Models\User;
 use App\Models\Image;
+
+use App\Http\Filters\AdsFilter;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -16,13 +19,14 @@ use Illuminate\Http\Request;
 
 class AdsController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, AdsFilter $filters)
     {
-        if($request['query']) {
-            $query = $request['query'];
-            return AdsListResource::collection(Ad::where('title', 'like', "%$query%")->paginate(16));
-        }
-        return AdsListResource::collection(Ad::paginate(16));
+        // if($request['query']) {
+        //     $query = $request['query'];
+        // return AdsListResource::collection(Ad::where('title', 'like', "%$query%")->paginate(16));
+        // }
+        $ads = Ad::filter($filters)->paginate(6);
+        return AdsListResource::collection($ads);
     }
 
     public function store(StoreAdRequest $request)

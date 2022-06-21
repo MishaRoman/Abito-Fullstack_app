@@ -33,4 +33,9 @@ class Ad extends Model
                             ->where('ad_id', $this->id)
                             ->first();
     }
+
+    public function scopeFilter($builder, $filters)
+    {
+        return $filters->apply($builder);
+    }
 }
