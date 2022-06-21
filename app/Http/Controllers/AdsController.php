@@ -11,12 +11,17 @@ use App\Models\User;
 use App\Models\Image;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 
 class AdsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        if($request['query']) {
+            $query = $request['query'];
+            return AdsListResource::collection(Ad::where('title', 'like', "%$query%")->paginate(16));
+        }
         return AdsListResource::collection(Ad::paginate(16));
     }
 

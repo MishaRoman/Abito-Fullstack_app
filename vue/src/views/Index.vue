@@ -1,5 +1,7 @@
 <template>
-  <SearchPanel />
+  <SearchPanel
+    @getFilteredAds="loadAds"
+  />
   <div class="container page-content">
     <main class="main">
       <h2 class="page-title">Recommendations for you</h2>
@@ -25,29 +27,38 @@ import { computed, onMounted, ref } from 'vue'
 const ads = computed(() => store.getters.ads)
 const totalPages = computed(() => store.state.ads.meta.last_page)
 
-const page = ref(0)
+const page = ref(1)
 const obs = ref(null)
+const searchQuery = ref(null)
 
-const loadAds = (page) => {
-  page.value += 1
+
+const loadAds = (query) => {
+  searchQuery.value = query
+  page.value = 1
   if (store.state.user.token) {
-    store.dispatch('getAuthAds', page.value)
+    store.dispatch('getAuthAds', query)
   } else {
-    store.dispatch('getAds', page.value)
+    store.dispatch('getAds', query)
   }
 }
 
-function loadMoreAds(page) {
+function loadMoreAds(page, query) {
   page.value += 1
   if (store.state.user.token) {
-    store.dispatch('getAuthAds', page.value)
+    store.dispatch('getMoreAuthAds', {params: {
+      page: page.value,
+      query: query
+    }})
   } else {
-    store.dispatch('getAds', page.value)
+    store.dispatch('getMoreAds', {params: {
+      page: page.value,
+      query: query
+    }})
   }
 }
 
 onMounted(() => {
-  loadAds(page)
+  loadAds()
 
   const options = {
     rootMargin: '0px',
@@ -55,7 +66,7 @@ onMounted(() => {
   }
   const callback = (entries, observer) => {
     if (entries[0].isIntersecting && page.value <= totalPages.value) {
-      loadMoreAds(page)
+      loadMoreAds(page, searchQuery.value)
     }
   };
   const observer = new IntersectionObserver(callback, options);

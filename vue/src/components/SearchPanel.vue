@@ -6,9 +6,9 @@
        class="search-input"
        placeholder="Search by ads"
        v-model="searchQuery"
-       @keyup.enter="sortBySearch"
+       @keyup.enter="getFilteredAds"
       />
-      <button class="search-button" @click="sortBySearch">
+      <button class="search-button" @click="getFilteredAds">
         <svg
           class="search-icon"
           width="15"
@@ -44,10 +44,12 @@
 import {ref} from 'vue'
 import store from '../store'
 
-const searchQuery = ref()
+const searchQuery = ref(null)
 
-const sortBySearch = () => {
-  store.dispatch('sortBySearch', searchQuery.value)
+const emit = defineEmits(['getFilteredAds'])
+
+function getFilteredAds() {
+  emit('getFilteredAds', searchQuery.value)
 }
 
 

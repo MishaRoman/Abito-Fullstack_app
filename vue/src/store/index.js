@@ -67,9 +67,12 @@ const store = createStore({
         })
     },
 
-    getAds({commit}, page) {
+    getAds({commit}, query) {
       commit('setAdsLoading', true)
-      return axiosClient.get(`/ads?page=${page}`)
+      return axiosClient.get('/ads', {params: {
+        page: 1,
+        query: query,
+      }})
         .then((res) => {
           commit('setAdsLoading', false)
           commit('setAds', res.data)
@@ -77,14 +80,42 @@ const store = createStore({
     },
 
     // get ads but through middleware auth, if you don't do it likes will not displaying correct
-    getAuthAds({commit}, page) {
+    getAuthAds({commit}, query) {
       commit('setAdsLoading', true)
-      return axiosClient.get(`/auth/ads?page=${page}`)
+      return axiosClient.get('/auth/ads', {params: {
+        page: 1,
+        query: query,
+      }})
         .then((res) => {
           commit('setAdsLoading', false)
           commit('setAds', res.data)
         })
     },
+
+    getMoreAds({commit}, {params}) {
+      commit('setAdsLoading', true)
+      return axiosClient.get('/ads', {params: {
+        page: params.page,
+        query: params.query
+      }})
+        .then((res) => {
+          commit('setAdsLoading', false)
+          commit('setMoreAds', res.data)
+        })
+    },
+    // get ads but through middleware auth, if you don't do it likes will not displaying correct
+    getMoreAuthAds({commit}, {params}) {
+      commit('setAdsLoading', true)
+      return axiosClient.get('/auth/ads', {params: {
+        page: params.page,
+        query: params.query
+      }})
+        .then((res) => {
+          commit('setAdsLoading', false)
+          commit('setMoreAds', res.data)
+        })
+    },
+
     getAd({commit}, id) {
       return axiosClient.get(`/ads/${id}`)
         .then((res) => {
@@ -142,10 +173,6 @@ const store = createStore({
     sortByCategory({commit}, id) {
       commit('sortAdsByCategory', id)
     },
-    sortBySearch({commit}, searchQuery) {
-      commit('sortAdsBySearch', searchQuery)
-    },
-
   },
   mutations: {
     setUser: (state, user) => {
@@ -167,24 +194,17 @@ const store = createStore({
       state.favorites = favorites.data
     },
     setAds: (state, ads) => {
-      state.ads.data = [...state.ads.data, ...ads.data]
+      state.ads.data = ads.data
       state.ads.meta = ads.meta
+    },
+    setMoreAds: (state, ads) => {
+      state.ads.data = [...state.ads.data, ...ads.data]
     },
     sortAdsByCategory: (state, id) => {
       if(state.sortedAds.data.length) {
         state.sortedAds.data = state.sortedAds.data.filter(ad => ad.category_id == id)
       } else {
         state.sortedAds.data = state.ads.data.filter(ad => ad.category_id == id)
-      }
-    },
-    sortAdsBySearch: (state, searchQuery) => {
-      if(!searchQuery) {
-        return
-      }
-      if(state.sortedAds.data.length) {
-        state.sortedAds.data = state.sortedAds.data.filter(ad => ad.title.toLowerCase().includes(searchQuery.toLowerCase()))
-      } else {
-        state.sortedAds.data = state.ads.data.filter(ad => ad.title.toLowerCase().includes(searchQuery.toLowerCase()))
       }
     },
     setAdsLoading: (state, loading) => {
