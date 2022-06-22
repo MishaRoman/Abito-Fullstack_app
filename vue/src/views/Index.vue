@@ -1,5 +1,7 @@
 <template>
-  <SearchPanel/>
+  <SearchPanel
+    @filterAds="filterAds"
+  />
   <div class="container page-content">
     <main class="main">
       <h2 class="page-title">Recommendations for you</h2>
@@ -21,6 +23,9 @@ import SearchPanel from '../components/SearchPanel.vue'
 import AdCard from '../components/AdCard.vue'
 import store from '../store'
 import { computed, onMounted, ref } from 'vue'
+import {useRouter} from 'vue-router'
+
+const router = useRouter()
 
 const ads = computed(() => store.state.ads.data)
 const totalPages = computed(() => store.state.ads.meta.last_page)
@@ -48,6 +53,10 @@ const loadMoreAds = (page) => {
       page: page.value,
     }})
   }
+}
+
+function filterAds(searchQuery) {
+  router.push({name: 'filteredAds', params: {query: searchQuery}})
 }
 
 onMounted(() => {

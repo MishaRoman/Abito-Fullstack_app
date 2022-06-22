@@ -1,30 +1,33 @@
 <template>
-  <SearchPanel/>
+  <SearchPanel
+    @filterAds="filterAds"
+  />
   <div class="container page-content">
-    <h2 class="page-title" ref="title"></h2>
-    <div class="cards">
-      <AdCard 
+    <h2 class="page-title" ref="title" v-if="ads.length">Search results for "{{searchQuery ? searchQuery : category}}"</h2>
+
+    <h2 class="page-title" ref="title" v-if="!loading && !ads.length">No results were found for query "{{searchQuery}}"</h2>
+    <div class="cards" v-else>
+      <AdCard
         v-for="ad in ads"
         :key="ad.id"
         :ad="ad"
       />
     </div>
-    <div class="observer" ref="obs" :class="ads.loading && ads.data.length ? 'spinner': '' "></div>
+    <div class="observer" ref="obs" :class="loading && ads.length ? 'spinner': '' "></div>
   </div>
 </template>
 
 <script setup>
 import AdCard from '../components/AdCard.vue'
 import SearchPanel from '../components/SearchPanel.vue'
-import {ref, onMounted, computed} from 'vue'
+import {ref, onMounted, computed, watch} from 'vue'
 import {useRoute} from 'vue-router'
 import store from '../store'
 
 const route = useRoute()
 const ads = computed(() => store.state.ads.data)
+const loading = computed(() => store.state.ads.loading)
 const totalPages = computed(() => store.state.ads.meta.last_page)
-
-const title = ref('')
 
 const page = ref(1)
 const searchQuery = ref(null)
@@ -66,6 +69,11 @@ const loadMoreAds = () => {
   }
 }
 
+const filterAds = (query) => {
+  searchQuery.value = query
+  loadAds(searchQuery.value)
+}
+
 onMounted(() => {
   searchQuery.value = route.params.query;
   category.value = route.params.category;
@@ -83,6 +91,13 @@ onMounted(() => {
   };
   const observer = new IntersectionObserver(callback, options);
   observer.observe(obs.value)
+})
+
+watch(route, (from, to) => {
+  if (to.name == 'filteredAdsWithCategory') {
+    category.value = route.params.category;
+    loadAds()
+  }
 })
 
 </script>

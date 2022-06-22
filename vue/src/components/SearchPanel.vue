@@ -6,9 +6,9 @@
        class="search-input"
        placeholder="Search by ads"
        v-model="searchQuery"
-       @keyup.enter="getFilteredAds"
+       @keyup.enter="filterAds"
       />
-      <button class="search-button" @click="getFilteredAds">
+      <button class="search-button" @click="filterAds">
         <svg
           class="search-icon"
           width="15"
@@ -42,12 +42,12 @@
 
 <script setup>
 import {ref} from 'vue'
-import {useRouter} from 'vue-router'
 
-const router = useRouter()
 const searchQuery = ref(null)
 
-function getFilteredAds() {
-  router.push({name: 'filteredAds', params: {query: searchQuery.value}})
+const emit = defineEmits(['filterAds'])
+
+function filterAds() {
+  emit('filterAds', searchQuery.value)
 }
 </script>

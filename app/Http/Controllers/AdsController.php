@@ -21,11 +21,7 @@ class AdsController extends Controller
 {
     public function index(Request $request, AdsFilter $filters)
     {
-        // if($request['query']) {
-        //     $query = $request['query'];
-        // return AdsListResource::collection(Ad::where('title', 'like', "%$query%")->paginate(16));
-        // }
-        $ads = Ad::filter($filters)->paginate(6);
+        $ads = Ad::filter($filters)->paginate(16);
         return AdsListResource::collection($ads);
     }
 
