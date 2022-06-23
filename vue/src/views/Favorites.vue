@@ -15,11 +15,16 @@
 <script setup>
 import SearchPanel from '../components/SearchPanel.vue'
 import AdCard from '../components/AdCard.vue'
+import { useStore } from 'vuex'
+import { ref } from 'vue'
 
-import store from '../store'
-import {computed} from 'vue'
+const store = useStore()
+
+const favorites = ref([])
 
 store.dispatch('getFavorites')
-const favorites = computed(() => store.state.favorites)
+  .then(data => {
+    favorites.value = data.data
+  })
 
 </script>

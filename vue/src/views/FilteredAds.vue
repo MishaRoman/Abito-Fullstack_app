@@ -3,9 +3,19 @@
     @filterAds="filterAds"
   />
   <div class="container page-content">
-    <h2 class="page-title" ref="title" v-if="ads.length">Search results for "{{searchQuery ? searchQuery : category}}"</h2>
+    <h2
+      class="page-title"
+      ref="title"
+      v-if="ads.length"
+      >Search results for "{{searchQuery ? searchQuery : category}}"
+    </h2>
 
-    <h2 class="page-title" ref="title" v-if="!loading && !ads.length">No results were found for query "{{searchQuery}}"</h2>
+    <h2
+      class="page-title"
+      ref="title"
+      v-if="!loading && !ads.length"
+      >No results were found for query "{{searchQuery}}"
+    </h2>
     <div class="cards" v-else>
       <AdCard
         v-for="ad in ads"
@@ -20,16 +30,18 @@
 <script setup>
 import AdCard from '../components/AdCard.vue'
 import SearchPanel from '../components/SearchPanel.vue'
-import {ref, onMounted, computed, watch} from 'vue'
-import {useRoute} from 'vue-router'
-import store from '../store'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+import { ref, onMounted, computed, watch } from 'vue'
 
 const route = useRoute()
+const store = useStore()
+
 const ads = computed(() => store.state.ads.data)
 const loading = computed(() => store.state.ads.loading)
 const totalPages = computed(() => store.state.ads.meta.last_page)
 
-const page = ref(1)
+const page = ref(null)
 const searchQuery = ref(null)
 const category = ref(null)
 

@@ -36,13 +36,15 @@
 
 <script setup>
 import AdCard from '../components/AdCard.vue'
-import store from '../store'
-import {useRoute} from 'vue-router'
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
 
 const route = useRoute()
+const store = useStore()
 
-const ads = ref()
+const ads = ref([])
+const phoneNumBtn = ref(null)
 const user = ref({
   id: null,
   name: '',
@@ -57,17 +59,9 @@ store.dispatch('getUserAds', route.params.id)
     user.value = res.data.user
   })
 
-const phoneNumBtn = ref(null)
-
 onMounted(() => {
   phoneNumBtn.value.addEventListener('click', () => phoneNumBtn.value.innerText = user.value.phone_number)
 });
-
-// if (store.state.user.token) {
-//   store.dispatch('getAuthAds')
-// } else {
-//   store.dispatch('getAds')
-// }
 
 </script>
 

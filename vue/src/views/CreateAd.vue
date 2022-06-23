@@ -43,32 +43,24 @@
         <button class="button create-form__button">Create</button>
       </div>
 
-      <div class="dropzone" ref="dropRef"></div>
+      <div class="dropzone" ref="dropzoneRef"></div>
     </form>
   </div>
 </template>
 
 <script setup>
-import {computed, ref, onMounted} from 'vue'
-import store from '../store'
 import Dropzone from 'dropzone'
-import {useRouter} from 'vue-router'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { computed, ref, onMounted } from 'vue'
 
 const router = useRouter()
-const dropRef = ref()
-
-onMounted(() => {
-  dropRef.value = new Dropzone('.dropzone', {
-    url: 'asdsd',
-    autoQueue: false,
-    addRemoveLinks: true,
-    thumbnailWidth: 320,
-    thumbnailHeight: 160,
-    acceptedFiles: 'image/*',
-  })
-})
+const store = useStore()
 
 const categories = computed(() => store.state.categories)
+
+const dropzoneRef = ref(null)
+const errors = ref({})
 
 const ad = {
   title: '',
@@ -79,10 +71,8 @@ const ad = {
   images: []
 }
 
-const errors = ref({})
-
 const createAd = () => {
-  const images = dropRef.value.dropzone.getAcceptedFiles()
+  const images = dropzoneRef.value.dropzone.getAcceptedFiles()
 
   for(let image of images) {
     if(!ad.images.includes(image.dataURL)) {
@@ -97,6 +87,18 @@ const createAd = () => {
      errors.value = err.response.data.error.message
    })
 }
+
+onMounted(() => {
+  dropzoneRef.value = new Dropzone('.dropzone', {
+    url: 'asdsd',
+    autoQueue: false,
+    addRemoveLinks: true,
+    thumbnailWidth: 320,
+    thumbnailHeight: 160,
+    acceptedFiles: 'image/*',
+  })
+})
+
 </script>
 
 <style scoped>

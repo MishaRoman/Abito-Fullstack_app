@@ -5,7 +5,7 @@
   <div class="container page-content">
     <main class="main">
       <h2 class="page-title">Recommendations for you</h2>
-      <div class="spinner" v-if="ads.loading && !ads.length"></div>
+      <div class="spinner" v-if="loading && !ads.length"></div>
       <div class="cards" v-else>
         <AdCard
           v-for="ad in ads"
@@ -14,20 +14,22 @@
         />
       </div>
     </main>
-    <div class="observer" ref="obs" :class="ads.loading && ads.length ? 'spinner': '' "></div>
+    <div class="observer" ref="obs" :class="loading && ads.length ? 'spinner': '' "></div>
   </div>
 </template>
 
 <script setup>
 import SearchPanel from '../components/SearchPanel.vue'
 import AdCard from '../components/AdCard.vue'
-import store from '../store'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import { computed, onMounted, ref } from 'vue'
-import {useRouter} from 'vue-router'
 
 const router = useRouter()
+const store = useStore()
 
 const ads = computed(() => store.state.ads.data)
+const loading = computed(() => store.state.ads.loading)
 const totalPages = computed(() => store.state.ads.meta.last_page)
 
 const page = ref(1)
@@ -42,7 +44,7 @@ const loadAds = () => {
   }
 }
 
-const loadMoreAds = (page) => {
+const loadMoreAds = () => {
   page.value += 1
   if (store.state.user.token) {
     store.dispatch('getMoreAuthAds', {params: {
@@ -68,7 +70,7 @@ onMounted(() => {
   }
   const callback = (entries, observer) => {
     if (entries[0].isIntersecting && page.value <= totalPages.value) {
-      loadMoreAds(page)
+      loadMoreAds()
     }
   };
   const observer = new IntersectionObserver(callback, options);

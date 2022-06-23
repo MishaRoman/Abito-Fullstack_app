@@ -14,10 +14,12 @@
 
 <script setup>
 import AdCard from '../components/AdCard.vue'
-import store from '../store'
-import {ref} from 'vue'
+import { useStore } from 'vuex'
+import { ref } from 'vue'
 
-const ads = ref()
+const store = useStore()
+
+const ads = ref([])
 store.dispatch('getAuthUserAds')
   .then(res => {
     ads.value = res.data

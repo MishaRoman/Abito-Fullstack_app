@@ -1,4 +1,4 @@
-import {createStore} from 'vuex'
+import { createStore } from 'vuex'
 import axiosClient from '../axios'
 
 const store = createStore({
@@ -14,11 +14,10 @@ const store = createStore({
       data: [],
     },
     totalPages: null,
-    favorites: [],
   },
-  getters: {
-    
-  },
+
+  getters: {},
+
   actions: {
     register({commit}, user) {
       return axiosClient.post('/register', user)
@@ -118,7 +117,7 @@ const store = createStore({
         })
     },
     getAdsByAuthor({commit}, params) {
-      return axiosClient.get(`/ads/author/${params[0]}/${params[1]}`)
+      return axiosClient.get(`/ads/author/${params.authorId}/${params.adId}`)
         .then(res => {
           return res.data
         })
@@ -141,16 +140,17 @@ const store = createStore({
           return res.data
         })
     },
-    updateUser({commit}, data) {
-      return axiosClient.post('/user/update', data)
+    getFavorites({commit}) {
+      return axiosClient.get('/favorites')
         .then(res => {
           return res.data
         })
     },
-    getFavorites({commit}) {
-      return axiosClient.get('/favorites')
+
+    updateUser({commit}, data) {
+      return axiosClient.post('/user/update', data)
         .then(res => {
-          commit('setFavorites', res.data)
+          return res.data
         })
     },
     addToFavorites({commit}, id) {
@@ -181,9 +181,6 @@ const store = createStore({
     },
     setCategories: (state, categories) => {
       state.categories = categories
-    },
-    setFavorites: (state, favorites) => {
-      state.favorites = favorites.data
     },
     setAds: (state, ads) => {
       state.ads.data = ads.data

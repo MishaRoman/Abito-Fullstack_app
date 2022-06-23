@@ -41,13 +41,11 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import { ref }  from 'vue'
 
 const searchQuery = ref(null)
 
 const emit = defineEmits(['filterAds'])
+const filterAds = () => emit('filterAds', searchQuery.value)
 
-function filterAds() {
-  emit('filterAds', searchQuery.value)
-}
 </script>

@@ -49,7 +49,7 @@
       </div>
     </main>
 
-    <div class="recommendations">
+    <div class="recommendations" v-if="otherAds.length">
       <h2 class="page-title">Other ads by this author</h2>
       <div class="cards">
         <AdCard
@@ -64,11 +64,11 @@
 
 <script setup>
 import AdCard from '../components/AdCard.vue'
-import {useRoute} from 'vue-router'
-import {ref, onMounted, watch} from 'vue'
-import store from '../store'
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -78,6 +78,7 @@ import 'swiper/css/scrollbar';
 const modules = [Navigation, Pagination, Scrollbar, A11y]
 
 const route = useRoute()
+const store = useStore()
 
 const ad = ref({
   id: null,
@@ -93,20 +94,25 @@ const ad = ref({
     member_since: null,
   }
 })
+const otherAds = ref([])
+const phoneNumBtn = ref(null)
 
 function getAd() {
   store.dispatch('getAd', route.params.id)
     .then(res => {
       ad.value = res.data
 
-      store.dispatch('getAdsByAuthor', [ad.value.author.id, ad.value.id])
+      store.dispatch('getAdsByAuthor',
+       {
+        authorId: ad.value.author.id,
+        adId: ad.value.id
+       })
         .then(res => {
           otherAds.value = res.data
         })
     })
 }
 getAd()
-const phoneNumBtn = ref(null)
 
 onMounted(() => {
   phoneNumBtn.value.addEventListener('click', () => phoneNumBtn.value.innerText = ad.value.author.phone_number)
@@ -117,8 +123,6 @@ watch(route, (from, to) => {
     getAd()
   }
 })
-
-const otherAds = ref()
 
 </script>
 

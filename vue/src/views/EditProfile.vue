@@ -3,6 +3,7 @@
     <hr>
     <h2 class="main-title">Profile settings</h2>
     <div class="main-wrapper">
+      <!-- Image input -->
       <div class="img-wrapper">
         <img class="img" :src="user.image_url">
         <div class="file-input">
@@ -10,6 +11,7 @@
           <input type="file" id="image" @change="onImageChoose"/>
         </div>
       </div>
+
       <div class="inputs-block">
         <div class="input-fields">
           <div class="input-field">
@@ -24,47 +26,52 @@
                 :autofocus="isNameDisabled"
                 v-model="user.name"
                 @change="isSaveButtonDisabled = false"
-                >
+              >
             </div>
             <button
-             class="edit-button"
-             @click="isNameDisabled = false"
-             :disabled="!isNameDisabled"
-             :class="isNameDisabled ? '': 'disabled'"
-            >Edit</button>
+              class="edit-button"
+              @click="isNameDisabled = false"
+              :disabled="!isNameDisabled"
+              :class="isNameDisabled ? '': 'disabled'"
+              >Edit
+            </button>
           </div>
           
           <div class="input-field">
             <div class="edit">
               <label for="phone_number" class="label">Phone number</label>
               <input type="tel"
-               id="phone_number"
-               name="phone_number" 
-               class="input"
-               :disabled="isPhoneDisabled"
-               v-model.number="user.phone_number"
-               @change="isSaveButtonDisabled = false"
+                id="phone_number"
+                name="phone_number" 
+                class="input"
+                :disabled="isPhoneDisabled"
+                v-model.number="user.phone_number"
+                @change="isSaveButtonDisabled = false"
               >
             </div>
             <button
-             class="edit-button"
-             @click="isPhoneDisabled = false"
-             :disabled="!isPhoneDisabled"
-             :class="isPhoneDisabled ? '': 'disabled'"
-            >Edit</button>
+              class="edit-button"
+              :class="isPhoneDisabled ? '': 'disabled'"
+              :disabled="!isPhoneDisabled"
+              @click="isPhoneDisabled = false"
+              >Edit
+            </button>
           </div>
           <div class="save">
             <button
-             class="save-button"
-             @click="updateUser"
-             :disabled="isSaveButtonDisabled"
-             :class="isSaveButtonDisabled ? 'disabled': ''"
-            >Save changes</button>
+              class="save-button"
+              :disabled="isSaveButtonDisabled"
+              :class="isSaveButtonDisabled ? 'disabled': ''"
+              @click="updateUser"
+              >Save changes
+            </button>
           </div>
 
           <div class="success-message" v-if="successMsg">
             <span>{{successMsg}}</span>
           </div>
+
+          <!-- Errors block -->
           <p v-if="Object.keys(errors).length" class="errors-block">
             <ul v-for="(field, i) of Object.keys(errors)" :key="i">
               <li v-for="(error, ind) of errors[field] || []" :key="ind">{{error}}</li>
@@ -77,11 +84,12 @@
 </template>
 
 <script setup>
-import store from '../store'
-import {ref} from 'vue'
-import {useRouter} from 'vue-router'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 const router = useRouter()
+const store = useStore()
 
 const user = ref({
   name: '',
@@ -137,7 +145,6 @@ function updateUser () {
       errors.value = err.response.data.error.message
     })
 }
-
 
 </script>
 
