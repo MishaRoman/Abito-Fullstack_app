@@ -9,30 +9,59 @@
     <form class="create-form" @submit.prevent="createAd">
       <div class="inputs">
         <label for="title">Title</label>
-        <input type="text" name="title" class="input" placeholder="title" v-model="ad.title">
-
+        <input
+          type="text"
+          name="title"
+          class="input"
+          placeholder="title"
+          required
+          v-model="ad.title"
+        >
         <label for="description">Description</label>
-        <textarea type="text"
-        name="desctiption"
-        class="text-input"
-        rows="7"
-        v-model="ad.description"></textarea>
-
+        <textarea
+          type="text"
+          name="desctiption"
+          class="text-input"
+          rows="7"
+          required
+          v-model="ad.description">
+        </textarea>
         <label for="price">Price in $</label>
-        <input type="number" name="price" class="input price-input" placeholder="Address" v-model="ad.price">
+        <input
+          type="number"
+          name="price"
+          class="input price-input"
+          placeholder="Price"
+          required
+          v-model="ad.price"
+        >
 
         <label for="category">Choose a category</label>
-        <select name="category" class="create-form__select" value="Choose" v-model="ad.category">
+        <select
+          name="category"
+          class="create-form__select"
+          value="Choose"
+          required
+          v-model="ad.category"
+        >
           <option
-          v-for="category in categories"
-          :key="category.id"
-          :value="category.id"
-          >{{category.title}}</option>
+            v-for="category in categories"
+            :key="category.id"
+            :value="category.id"
+            >{{category.title}}
+          </option>
           
         </select>
 
         <label for="address">Address</label>
-        <input type="text" name="address" class="input" placeholder="Address" v-model="ad.address">
+        <input
+          type="text"
+          name="address"
+          class="input"
+          placeholder="Address"
+          required
+          v-model="ad.address"
+        >
 
         <p v-if="Object.keys(errors).length" class="errors-block">
           <ul v-for="(field, i) of Object.keys(errors)" :key="i">
@@ -40,64 +69,91 @@
           </ul>
         </p>
 
-        <button class="button create-form__button">Create</button>
+        <button class="button create-form__button" :disabled="loading">
+          Create
+          <span class="loading" v-if="loading"></span>
+        </button>
       </div>
-
-      <div class="dropzone" ref="dropzoneRef"></div>
+      <div class="images-input">
+        <div class="input-label">
+          <label for="image" class="file-input-label">Add Images <small>(maximum 4)</small></label>
+          <input id="image" type="file" multiple @change="getFiles" accept="image/jpeg, image/png, image/jpg">
+        </div>
+        <div class="images-preview" v-if="imagesPreview">
+          <div
+            v-for="(img, idx) in imagesPreview"
+            :key="idx"
+            class="thumbnail-wrapper">
+            <svg
+              class="remove-image"
+              @click="removeImg(idx)"
+              fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+              <path d="M 4.7070312 3.2929688 L 3.2929688 4.7070312 L 10.585938 12 L 3.2929688 19.292969 L 4.7070312 20.707031 L 12 13.414062 L 19.292969 20.707031 L 20.707031 19.292969 L 13.414062 12 L 20.707031 4.7070312 L 19.292969 3.2929688 L 12 10.585938 L 4.7070312 3.2929688 z"/>
+            </svg>
+            <img :src="img" class="thumbnail">
+          </div>
+        </div>
+      </div>
     </form>
   </div>
 </template>
 
 <script setup>
-import Dropzone from 'dropzone'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 
 const router = useRouter()
 const store = useStore()
 
 const categories = computed(() => store.state.categories)
 
-const dropzoneRef = ref(null)
 const errors = ref({})
+const imagesPreview = ref([])
+const loading = ref(false)
+
 
 const ad = {
   title: '',
   description: '',
-  price: 0,
+  price: null,
   category: null,
   address: '',
   images: []
 }
+const getFiles = (e) => {
+  const files = e.target.files
 
-const createAd = () => {
-  const images = dropzoneRef.value.dropzone.getAcceptedFiles()
+  for (let img of files) {
+    if (!img.type.match("image")) continue; // ONLY PHOTOS (SKIP CURRENT ITERATION IF NOT A PHOTO)
+    
+    const reader = new FileReader()
+    reader.onload = () => {
+      if(!ad.images.includes(reader.result) && ad.images.length < 4) { // Maximum 4 images
+        ad.images.push(reader.result)
+        imagesPreview.value.push(reader.result)
+      }
 
-  for(let image of images) {
-    if(!ad.images.includes(image.dataURL)) {
-      ad.images.push(image.dataURL)
     }
+    reader.readAsDataURL(img)
   }
+}
+const removeImg = (index) => {
+  ad.images.splice(index)
+  imagesPreview.value.splice(index, 1)
+} 
+const createAd = () => {
+  loading.value = true
   store.dispatch('createAd', ad)
    .then(res => {
      router.push({name: 'single', params: {id: res.data.ad.id}})
    })
    .catch(err => {
+     loading.value = false
      errors.value = err.response.data.error.message
    })
 }
 
-onMounted(() => {
-  dropzoneRef.value = new Dropzone('.dropzone', {
-    url: 'asdsd',
-    autoQueue: false,
-    addRemoveLinks: true,
-    thumbnailWidth: 320,
-    thumbnailHeight: 160,
-    acceptedFiles: 'image/*',
-  })
-})
 
 </script>
 
@@ -105,17 +161,6 @@ onMounted(() => {
 .inputs {
   display: flex;
   flex-direction: column;
-}
-.dropzone {
-  align-self: flex-start;
-  border-radius: 10px;
-  margin-left: 100px;
-  min-height: 300px;
-  width: 400px;
-  border-style: dashed;
-  border-width: 3px;
-  padding: 20px;
-  cursor: pointer;
 }
 
 label {
@@ -154,6 +199,46 @@ label {
   height: 30px;
 }
 
+.images-input {
+  align-self: flex-start;
+  border-radius: 10px;
+  margin-left: 100px;
+  min-height: 300px;
+  width: 400px;
+  border-style: dashed;
+  border-width: 3px;
+  padding: 20px;
+}
+.input-label {
+  text-align: center;
+}
+.images-preview {
+  display: flex;
+  flex-wrap: wrap;
+}
+.thumbnail-wrapper {
+  margin: 0 25px;
+}
+.thumbnail {
+  width: 362px;
+}
+.remove-image {
+  cursor: pointer;
+  position: relative;
+  left: 334px;
+  top: 32px;
+  background-color: #fff;
+  border: 2px solid #256EEB;
+}
+.file-input-label {
+  background: #256EEB;
+  border-radius: 5px;
+  display: inline-block;
+  color: #fff;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
 .create-form__button {
   display: block;
   background-color: #256EEB;
@@ -173,6 +258,25 @@ label {
   padding: 0;
   color: red;
 }
+.loading {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 5px;
+  border: 4px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+}
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
+}
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
@@ -186,15 +290,19 @@ input[type="number"]:hover,
 input[type="number"]:focus {
   -moz-appearance: number-input;
 }
+input[type="file"] {
+    display: none;
+}
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .create-form {
-    display: block;
+    flex-flow: column nowrap;
   }
-  .dropzone {
-    margin: 0;
-    width: auto;
-    height: auto;
+  .images-input {
+    margin-left: 0;
+  }
+  .inputs {
+    margin-bottom: 20px;
   }
 }
 </style>

@@ -24,12 +24,12 @@ class StoreAdRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required',
+            'title' => 'required|max:64',
             'description' => 'required',
-            'price' => 'required',
+            'price' => 'required|max:40',
             'category' => 'required|exists:categories,id',
-            'address' => 'required',
-            'images' => 'required'
+            'address' => 'required|max:64',
+            'images' => 'required|max:4'
         ];
     }
 }

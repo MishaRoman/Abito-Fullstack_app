@@ -32,7 +32,6 @@
               class="edit-button"
               @click="isNameDisabled = false"
               :disabled="!isNameDisabled"
-              :class="isNameDisabled ? '': 'disabled'"
               >Edit
             </button>
           </div>
@@ -51,7 +50,6 @@
             </div>
             <button
               class="edit-button"
-              :class="isPhoneDisabled ? '': 'disabled'"
               :disabled="!isPhoneDisabled"
               @click="isPhoneDisabled = false"
               >Edit
@@ -61,7 +59,6 @@
             <button
               class="save-button"
               :disabled="isSaveButtonDisabled"
-              :class="isSaveButtonDisabled ? 'disabled': ''"
               @click="updateUser"
               >Save changes
             </button>
@@ -217,10 +214,7 @@ function updateUser () {
   margin-left: 6px;
   border: none;
 }
-.disabled {
-  opacity: 0.5;
-  cursor: default !important;
-}
+
 
 .save {
   text-align: center;
