@@ -23,7 +23,8 @@
         :ad="ad"
       />
     </div>
-    <div class="observer" ref="obs" :class="loading && ads.length ? 'spinner': '' "></div>
+
+    <div v-intersection="loadMoreAds" class="observer" :class="loading && ads.length ? 'spinner': '' "></div>
   </div>
 </template>
 
@@ -32,7 +33,7 @@ import AdCard from '../components/AdCard.vue'
 import SearchPanel from '../components/SearchPanel.vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const route = useRoute()
 const store = useStore()
@@ -44,8 +45,6 @@ const totalPages = computed(() => store.state.ads.meta.last_page)
 const page = ref(null)
 const searchQuery = ref(null)
 const category = ref(null)
-
-const obs = ref(null)
 
 const loadAds = () => {
   page.value = 1
@@ -65,7 +64,10 @@ const loadAds = () => {
 }
 
 const loadMoreAds = () => {
+  if (page.value >= totalPages.value) return
+
   page.value += 1
+
   if (store.state.user.token) {
     store.dispatch('getMoreAuthAds', {params: {
       page: page.value,
@@ -86,24 +88,11 @@ const filterAds = (query) => {
   loadAds(searchQuery.value)
 }
 
-onMounted(() => {
-  searchQuery.value = route.params.query;
-  category.value = route.params.category;
-  
-  loadAds()
+searchQuery.value = route.params.query;
+category.value = route.params.category;
 
-  const options = {
-    rootMargin: '0px',
-    threshold: 1.0
-  }
-  const callback = (entries, observer) => {
-    if (entries[0].isIntersecting && page.value <= totalPages.value) {
-      loadMoreAds()
-    }
-  };
-  const observer = new IntersectionObserver(callback, options);
-  observer.observe(obs.value)
-})
+loadAds()
+
 
 watch(route, (from, to) => {
   if (to.name == 'filteredAdsWithCategory') {
@@ -115,21 +104,5 @@ watch(route, (from, to) => {
 </script>
 
 <style scoped>
-.observer {
-  height: 30px;
-  margin-bottom: 3px;
-  text-align: center;
-}
-.spinner {
-  width: 2em;
-  height: 2em;
-  border-top: 0.8em solid #256EEB;
-  border-right: 0.8em solid transparent;
-  border-radius: 50%;
-  margin: auto;
-  animation: spinner-23543608 0.6s linear infinite;
-}
-@keyframes spinner {
-  100% { transform: rotate(360deg) }
-}
+
 </style>

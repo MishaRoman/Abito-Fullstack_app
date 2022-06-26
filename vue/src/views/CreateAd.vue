@@ -77,7 +77,7 @@
       <div class="images-input">
         <div class="input-label">
           <label for="image" class="file-input-label">Add Images <small>(maximum 4)</small></label>
-          <input id="image" type="file" multiple @change="getFiles" accept="image/jpeg, image/png, image/jpg">
+          <input id="image" type="file" multiple @change="saveImages" accept="image/jpeg, image/png, image/jpg">
         </div>
         <div class="images-preview" v-if="imagesPreview">
           <div
@@ -112,7 +112,6 @@ const errors = ref({})
 const imagesPreview = ref([])
 const loading = ref(false)
 
-
 const ad = {
   title: '',
   description: '',
@@ -121,7 +120,8 @@ const ad = {
   address: '',
   images: []
 }
-const getFiles = (e) => {
+
+const saveImages = (e) => {
   const files = e.target.files
 
   for (let img of files) {

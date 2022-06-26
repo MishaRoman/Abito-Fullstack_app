@@ -23,7 +23,7 @@ class AdsListResource extends JsonResource
             'price' => $this->price,
             'address' => $this->address,
             'category_id' => $this->category_id,
-            'preview' => URL::to(Image::where('ad_id', $this->id)->value('title')),
+            'preview' => $this->images->first() ? URL::to($this->images->first()->title) : null,
             'favorited' => $this->favorited(),
             'created_at' => (new \DateTime($this->created_at))->format('d.m H:i'),
         ];
