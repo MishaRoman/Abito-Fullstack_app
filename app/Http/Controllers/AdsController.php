@@ -15,6 +15,7 @@ use App\Http\Filters\AdsFilter;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 
 class AdsController extends Controller
@@ -64,7 +65,6 @@ class AdsController extends Controller
 
     public function edit(Request $request)
     {
-
         $ad = Ad::where('id', $request->id)->firstOrFail();
 
         if ($ad->user_id !== auth()->id()) {
@@ -86,6 +86,22 @@ class AdsController extends Controller
         ];
 
         return response()->json($json);
+    }
+
+    public function destroy(Ad $ad) {
+        if ($ad->user_id !== auth()->id()) {
+            return response('This action is unauthorize', 401);
+        }
+
+        // delete ads' images
+        foreach ($ad->images as $image) {
+            $absolutePath = public_path($image->title);
+            File::delete($absolutePath);
+        }
+
+        $ad->delete();
+        
+        return response('Ad was deleted successfully', 200);
     }
 
     public function getAdsByAuthor($authorId, $adId)

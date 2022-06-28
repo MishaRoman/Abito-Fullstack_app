@@ -51,7 +51,14 @@ const store = createStore({
     },
 
     editAd({commit}, data) {
-      return axiosClient.post(`ad/${data.id}/edit`, data)
+      return axiosClient.post(`ads/${data.id}/edit`, data)
+        .then(res => {
+          return res
+        })
+    },
+
+    deleteAd({commit}, id) {
+      return axiosClient.delete(`ads/${id}/destroy`)
         .then(res => {
           return res
         })

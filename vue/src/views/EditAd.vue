@@ -55,6 +55,10 @@
           Edit
           <span class="loading" v-if="loading"></span>
         </button>
+
+        <button class="create-form__button delete-btn" @click.prevent="deleteAd">
+          Delete ad
+        </button>
       </div>
       
     </form>
@@ -107,9 +111,17 @@ const editAd = () => {
     })
 }
 
+const deleteAd = () => {
+  if ( confirm('Are you sure you want to delete this ad?') ) {
+    store.dispatch('deleteAd', ad.value.id).then(router.push('/'))
+  }
+}
+
 
 </script>
 
 <style>
-
+.delete-btn {
+  background-color: red;
+}
 </style>

@@ -29,7 +29,8 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('/ads', 'store');
         Route::post('/favorite/{ad}', 'favorite');
         Route::post('/unfavorite/{ad}', 'unfavorite');
-        Route::post('/ad/{ad}/edit', 'edit');
+        Route::post('/ads/{ad}/edit', 'edit');
+        Route::delete('/ads/{ad}/destroy', 'destroy');
     });
 });
 
