@@ -8,6 +8,7 @@ import Favorites from '../views/Favorites.vue'
 import MyAds from '../views/MyAds.vue'
 import UserAds from '../views/UserAds.vue'
 import FilteredAds from '../views/FilteredAds.vue'
+import EditAd from '../views/EditAd.vue'
 import store from "../store";
 
 const routes = [
@@ -64,6 +65,12 @@ const routes = [
         path: '/profile/edit',
         meta: {requiresAuth: true},
         component: EditProfile
+      },
+      {
+        name: 'editAd',
+        path: '/ad/:id/edit',
+        meta: {requiresAuth: true},
+        component: EditAd
       },
     ]
   }

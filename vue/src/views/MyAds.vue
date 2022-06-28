@@ -7,6 +7,7 @@
         v-for="ad in ads"
         :key="ad.id"
         :ad="ad"
+        :canEdit="true"
       />
     </div>
   </div>

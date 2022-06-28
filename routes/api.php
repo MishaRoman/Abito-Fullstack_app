@@ -23,12 +23,14 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::controller(AdsController::class)->group(function () {
         Route::get('auth/ads', 'index');
+        Route::get('/ads/{ad}', 'show');
+        Route::get('/user/ads', 'myAds');
+        Route::get('/favorites', 'favorites');
         Route::post('/ads', 'store');
+        Route::post('/favorite/{ad}', 'favorite');
+        Route::post('/unfavorite/{ad}', 'unfavorite');
+        Route::post('/ad/{ad}/edit', 'edit');
     });
-    Route::get('/user/ads', [AdsController::class, 'myAds']);
-    Route::get('/favorites', [AdsController::class, 'favorites']);
-    Route::post('/favorite/{ad}', [AdsController::class, 'favorite']);
-    Route::post('/unfavorite/{ad}', [AdsController::class, 'unfavorite']);
 });
 
 Route::get('/user/{id}', [AdsController::class, 'userAds']);

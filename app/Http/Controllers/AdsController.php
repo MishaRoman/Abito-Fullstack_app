@@ -62,6 +62,32 @@ class AdsController extends Controller
         return new SingleAdResource($ad);
     }
 
+    public function edit(Request $request)
+    {
+
+        $ad = Ad::where('id', $request->id)->firstOrFail();
+
+        if ($ad->user_id !== auth()->id()) {
+            return response('This action is unauthorize', 401);
+        }
+
+        $data = $request->validate([
+            'title' => 'required|max:64',
+            'description' => 'required',
+            'address' => 'required|max:64',
+            'price' => 'required|max:10',
+        ]);
+
+        $ad->update($data);
+
+        $json = [
+            'success' => 'true',
+            'ad' => $ad,
+        ];
+
+        return response()->json($json);
+    }
+
     public function getAdsByAuthor($authorId, $adId)
     {
         $ads = Ad::where('user_id', $authorId)->where('id', '!=', $adId)->get();

@@ -184,23 +184,5 @@ const login = (e) => {
 li {
   color: red
 }
-.loading {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-left: 5px;
-  border: 4px solid transparent;
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: button-loading-spinner 1s ease infinite;
-}
-@keyframes button-loading-spinner {
-  from {
-    transform: rotate(0turn);
-  }
 
-  to {
-    transform: rotate(1turn);
-  }
-}
 </style>

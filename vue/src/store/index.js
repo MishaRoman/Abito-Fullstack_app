@@ -4,7 +4,9 @@ import axiosClient from '../axios'
 const store = createStore({
   state: {
     user: {
-      data: {},
+      data: {
+        id: sessionStorage.getItem('userId')
+      },
       token: sessionStorage.getItem('TOKEN')
     },
     categories: [],
@@ -22,16 +24,14 @@ const store = createStore({
     register({commit}, user) {
       return axiosClient.post('/register', user)
         .then(({data}) => {
-          commit('setUser', data.user)
-          commit('setToken', data.token)
+          commit('setUser', data)
           return data
         })
     },
     login({commit}, user) {
       return axiosClient.post('/login', user)
         .then(({data}) => {
-          commit('setUser', data.user);
-          commit('setToken', data.token)
+          commit('setUser', data);
           return data;
         })
     },
@@ -46,6 +46,13 @@ const store = createStore({
     createAd({commit}, ad) {
       return axiosClient.post('/ads', ad)
         .then((res) => {
+          return res
+        })
+    },
+
+    editAd({commit}, data) {
+      return axiosClient.post(`ad/${data.id}/edit`, data)
+        .then(res => {
           return res
         })
     },
@@ -153,6 +160,7 @@ const store = createStore({
           return res.data
         })
     },
+
     addToFavorites({commit}, id) {
       return axiosClient.post(`/favorite/${id}`)
         .then(res => {
@@ -167,17 +175,15 @@ const store = createStore({
     },
   },
   mutations: {
-    setUser: (state, user) => {
-      state.user.data = user
-    },
-    setToken: (state, token) => {
-      state.user.token = token
-      sessionStorage.setItem('TOKEN', token)
+    setUser: (state, data) => {
+      sessionStorage.setItem('userId', data.user.id)
+      sessionStorage.setItem('TOKEN', data.token)
     },
     logout: (state) => {
       state.user.token = null;
       state.user.data = {};
       sessionStorage.removeItem("TOKEN");
+      sessionStorage.removeItem("userId");
     },
     setCategories: (state, categories) => {
       state.categories = categories

@@ -1,6 +1,5 @@
 <template>
   <div class="card">
-
     <router-link class="card-link" :to="{name: 'single', params: {id: ad.id}}">
       <img :src="ad.preview" class="card-image" />
     </router-link>
@@ -8,6 +7,13 @@
     <div class="card-header">
       <router-link class="card-link" :to="{name: 'single', params: {id: ad.id}}">
         <h3 class="card-title">{{ad.title}}</h3>
+      </router-link>
+
+      <router-link
+        :to="{name: 'editAd', params:{id: ad.id}}"
+        class="button button-primary edit-btn"
+        v-if="canEdit"
+        >Edit
       </router-link>
 
       <!-- Favorite button -->
@@ -37,7 +43,8 @@
 import { useStore } from 'vuex'
 
 const { ad } = defineProps({
-  ad: Object
+  ad: Object,
+  canEdit: Boolean,
 })
 
 const store = useStore()
@@ -59,5 +66,10 @@ function removeFromFavorites(id) {
 }
 .favorited {
   fill: red;
+}
+.edit-btn {
+  padding: 8px;
+  margin-top: 8px;
+  margin-right: 5px;
 }
 </style>

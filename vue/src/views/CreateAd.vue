@@ -69,7 +69,7 @@
           </ul>
         </p>
 
-        <button class="button create-form__button" :disabled="loading">
+        <button class="create-form__button" :disabled="loading">
           Create
           <span class="loading" v-if="loading"></span>
         </button>
@@ -157,7 +157,7 @@ const createAd = () => {
 
 </script>
 
-<style scoped>
+<style>
 .inputs {
   display: flex;
   flex-direction: column;
@@ -249,6 +249,7 @@ label {
   font-weight: 700;
   color: #ffffff;
   align-self: center;
+  cursor: pointer;
 }
 
 .errors-block {
@@ -258,25 +259,7 @@ label {
   padding: 0;
   color: red;
 }
-.loading {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-left: 5px;
-  border: 4px solid transparent;
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: button-loading-spinner 1s ease infinite;
-}
-@keyframes button-loading-spinner {
-  from {
-    transform: rotate(0turn);
-  }
 
-  to {
-    transform: rotate(1turn);
-  }
-}
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
