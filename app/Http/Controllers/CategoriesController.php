@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Illuminate\Support\Facades\Cache;
 
 class CategoriesController extends Controller
 {
     public function __invoke()
     {
-        return Category::all();
+        $categories = Cache::rememberForever('categories', function() {
+            Category::get();
+        });
+        return $categories;
     }
 }
