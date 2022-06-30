@@ -63,11 +63,7 @@
           v-model="ad.address"
         >
 
-        <p v-if="Object.keys(errors).length" class="errors-block">
-          <ul v-for="(field, i) of Object.keys(errors)" :key="i">
-            <li v-for="(error, ind) of errors[field] || []" :key="ind">{{error}}</li>
-          </ul>
-        </p>
+        <Errors v-if="Object.keys(errors).length" :errors="errors"/>
 
         <button class="create-form__button" :disabled="loading">
           Create
@@ -99,6 +95,7 @@
 </template>
 
 <script setup>
+import Errors from '../components/Errors.vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
@@ -251,15 +248,6 @@ label {
   align-self: center;
   cursor: pointer;
 }
-
-.errors-block {
-  margin-left: 15px;
-}
-.errors-block ul {
-  padding: 0;
-  color: red;
-}
-
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {

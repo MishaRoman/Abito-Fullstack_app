@@ -98,7 +98,13 @@ onMounted(() => {
   width: 77%;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 1200px) {
+  .cards {
+    word-break: break-all;
+  }
+}
+
+@media (max-width: 992px) {
   .main-wrapper {
     flex-direction: column;
   }

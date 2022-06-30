@@ -22,6 +22,7 @@
                 id="name"
                 name="name"
                 class="input"
+                required
                 :disabled="isNameDisabled"
                 :autofocus="isNameDisabled"
                 v-model="user.name"
@@ -35,26 +36,7 @@
               >Edit
             </button>
           </div>
-          
-          <div class="input-field">
-            <div class="edit">
-              <label for="phone_number" class="label">Phone number</label>
-              <input type="tel"
-                id="phone_number"
-                name="phone_number" 
-                class="input"
-                :disabled="isPhoneDisabled"
-                v-model.number="user.phone_number"
-                @change="isSaveButtonDisabled = false"
-              >
-            </div>
-            <button
-              class="edit-button"
-              :disabled="!isPhoneDisabled"
-              @click="isPhoneDisabled = false"
-              >Edit
-            </button>
-          </div>
+
           <div class="save">
             <button
               class="save-button"
@@ -69,11 +51,7 @@
           </div>
 
           <!-- Errors block -->
-          <p v-if="Object.keys(errors).length" class="errors-block">
-            <ul v-for="(field, i) of Object.keys(errors)" :key="i">
-              <li v-for="(error, ind) of errors[field] || []" :key="ind">{{error}}</li>
-            </ul>
-          </p>
+          <Errors v-if="Object.keys(errors).length" :errors="errors"/>
         </div>
       </div>
     </div>
@@ -81,6 +59,7 @@
 </template>
 
 <script setup>
+import Errors from '../components/Errors.vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
@@ -90,13 +69,11 @@ const store = useStore()
 
 const user = ref({
   name: '',
-  phone_number: null,
   image: '',
   image_url: '',
 })
 
 let isNameDisabled = ref(true)
-let isPhoneDisabled = ref(true)
 let isSaveButtonDisabled = ref(true)
 
 const successMsg = ref('')
@@ -105,7 +82,6 @@ const errors = ref({})
 store.dispatch('getAuthUser')
   .then(data => {
     user.value.name = data.name
-    user.value.phone_number = data.phone_number
     user.value.image_url = data.image_url
   })
 
@@ -128,10 +104,6 @@ function updateUser () {
   const data = {
     name: user.value.name,
     image: user.value.image,
-    phone_number: undefined,
-  }
-  if(!isPhoneDisabled) {
-    data['phone_number'] = user.value.phone_number    
   }
   
   store.dispatch('updateUser', data)
@@ -166,10 +138,7 @@ function updateUser () {
   display: flex;
   flex: 0 0 ;
 }
-.errors-block ul {
-  padding: 0;
-  color: red;
-}
+
 .file-input {
   margin-top: 15px;
   text-align: center;

@@ -49,11 +49,7 @@
         </button>
 
         <!-- Login errors block -->
-        <div v-if="Object.keys(loginErrors).length">
-          <ul v-for="(field, i) of Object.keys(loginErrors)" :key="i">
-            <li v-for="(error, ind) of loginErrors[field] || []" :key="ind">{{error}}</li>
-          </ul>
-        </div>
+        <Errors v-if="Object.keys(loginErrors).length" :errors="loginErrors"/>
 
       </form>
 
@@ -109,11 +105,7 @@
         </button>
 
         <!-- Registration errors block -->
-        <div v-if="Object.keys(signupErrors).length">
-          <ul v-for="(field, i) of Object.keys(signupErrors)" :key="i">
-            <li v-for="(error, ind) of signupErrors[field] || []" :key="ind">{{error}}</li>
-          </ul>
-        </div>
+        <Errors v-if="Object.keys(signupErrors).length" :errors="signupErrors"/>
         
       </form>
     </div>
@@ -121,6 +113,7 @@
 </template>
 
 <script setup>
+import Errors from './Errors.vue'
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 
@@ -181,8 +174,5 @@ const login = (e) => {
 </script>
 
 <style scoped>
-li {
-  color: red
-}
 
 </style>
