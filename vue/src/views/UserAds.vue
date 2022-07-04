@@ -14,9 +14,6 @@
           <button class="button button-block button-primary" ref="phoneNumBtn">
             Show phone number
           </button>
-          <button class="button button-block button-success">
-            Write a message
-          </button>
         </div>
       </div>
 

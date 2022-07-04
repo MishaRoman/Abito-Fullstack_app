@@ -10,7 +10,7 @@ class CategoriesController extends Controller
     public function __invoke()
     {
         $categories = Cache::rememberForever('categories', function() {
-            Category::get();
+            return Category::get();
         });
         return $categories;
     }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdsController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\CommentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,12 +33,14 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('/ads/{ad}/edit', 'edit');
         Route::delete('/ads/{ad}/destroy', 'destroy');
     });
+    Route::post('/ads/{ad}/comments', [CommentsController::class, 'store']);
 });
 
 Route::get('/user/{id}', [AdsController::class, 'userAds']);
 Route::get('/categories', CategoriesController::class);
 Route::get('/ads', [AdsController::class, 'index']);
 Route::get('/ads/{ad}', [AdsController::class, 'show']);
+Route::get('/ads/{ad}/comments', [CommentsController::class, 'index']);
 Route::get('/ads/author/{authorId}/{adId}', [AdsController::class, 'getAdsByAuthor']);
 
 // Auth logins

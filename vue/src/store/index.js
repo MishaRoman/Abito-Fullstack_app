@@ -130,6 +130,19 @@ const store = createStore({
           return res.data
         })
     },
+    getComments({commit}, id) {
+      return axiosClient.get(`/ads/${id}/comments`)
+        .then((res) => {
+          return res.data
+        })
+    },
+    addComment({commit}, params) {
+      return axiosClient.post(`/ads/${params.adId}/comments`, {body: params.body})
+        .then(res => {
+          return res
+        })
+    },
+
     getAdsByAuthor({commit}, params) {
       return axiosClient.get(`/ads/author/${params.authorId}/${params.adId}`)
         .then(res => {
@@ -180,6 +193,7 @@ const store = createStore({
           return res
         })
     },
+    
   },
   mutations: {
     setUser: (state, data) => {

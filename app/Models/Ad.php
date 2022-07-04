@@ -22,6 +22,11 @@ class Ad extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function images()
     {
         return $this->hasMany(Image::class);

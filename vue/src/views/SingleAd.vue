@@ -49,6 +49,45 @@
       </div>
     </main>
 
+    <div class="comments-wrapper">
+      <form @submit.prevent="addComment">
+        <h2>Write a message...</h2>
+        <textarea
+          name="body"
+          class="comments-textarea"
+          rows="12"
+          v-model="commentBody"
+          >
+        </textarea>
+        <button
+          class="button button-primary"
+          @click.prevent="addComment"
+          >Send
+        </button>
+      </form>
+    </div>
+
+    <div class="comments-wrapper" v-if="ad.comments">
+      <div
+        class="comment"
+        v-for="comment in ad.comments"
+        :key="comment.id"
+      >
+        <router-link class="card-link" :to="{name: 'userAds', params: {id: comment.author.id}}">
+          <div class="comment-author">
+              <img :src="comment.author.image_url" class="author-avatar">
+              <div>
+                <span class="author-name">{{comment.author.name}}</span>
+                <span class="author-status">{{comment.created_at}}</span>
+              </div>
+          </div>
+        </router-link>
+        <div class="comment-body">
+          <p>{{comment.body}}</p>
+        </div>
+      </div>
+    </div>
+
     <div class="recommendations" v-if="otherAds.length">
       <h2 class="page-title">Other ads by this author</h2>
       <div class="cards">
@@ -92,8 +131,11 @@ const ad = ref({
     phone_number: null,
     image_url: '',
     member_since: null,
-  }
+  },
+  comments: []
 })
+
+const commentBody = ref('')
 const otherAds = ref([])
 const phoneNumBtn = ref(null)
 
@@ -101,17 +143,39 @@ function getAd() {
   store.dispatch('getAd', route.params.id)
     .then(res => {
       ad.value = res.data
-
-      store.dispatch('getAdsByAuthor',
-       {
-        authorId: ad.value.author.id,
-        adId: ad.value.id
-       })
-        .then(res => {
-          otherAds.value = res.data
-        })
+      getAdsByAuthor()
     })
 }
+
+const getAdsByAuthor = () => {
+  store.dispatch('getAdsByAuthor',
+    {
+      authorId: ad.value.author.id,
+      adId: ad.value.id
+    })
+    .then(res => {
+      otherAds.value = res.data
+    })
+}
+
+const addComment = () => {
+  store.dispatch('addComment', {
+    body: commentBody.value,
+    adId: ad.value.id,
+  })
+  .then(() => {
+    getComments()
+    commentBody.value = ''
+  })
+}
+
+const getComments = () => {
+  store.dispatch('getComments', ad.value.id)
+    .then (res => {
+      ad.value.comments = res.data
+    })
+}
+
 getAd()
 
 onMounted(() => {
@@ -134,5 +198,29 @@ watch(route, (from, to) => {
 }
 .recommendations {
   margin-top: 20px;
+}
+
+.comments-wrapper {
+  width: 560px;
+}
+.comments-textarea {
+  width: 552px;
+  border: 2px solid #0A143A;
+}
+.button-primary {
+  margin-top: 15px;
+}
+
+.comment {
+  border-radius: 5px;
+  margin: 15px auto;
+  padding: 8px;
+  background-color: rgb(216, 223, 224);
+}
+.comment-author {
+  display: flex;
+}
+.comment-author .author-avatar {
+  margin-right: 10px;
 }
 </style>

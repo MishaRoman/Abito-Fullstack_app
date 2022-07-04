@@ -23,6 +23,7 @@ class SingleAdResource extends JsonResource
             'price' => $this->price,
             'address' => $this->address,
             'author' => new UserResource(User::findOrFail($this->user_id)),
+            'comments' => CommentsResource::collection($this->comments),
             'images' => AdImagesResource::collection(Image::where('ad_id', $this->id)->get()),
             'created_at' => (new \DateTime($this->created_at))->format('d.m H:i'),
         ];
