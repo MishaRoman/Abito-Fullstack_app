@@ -104,7 +104,7 @@ class AdsController extends Controller
         return response('Ad was deleted successfully', 200);
     }
 
-    public function getAdsByAuthor($authorId, $adId)
+    public function getAdsByAuthor(Request $request, $authorId, $adId)
     {
         $ads = Ad::where('user_id', $authorId)->where('id', '!=', $adId)->take(8)->get();
         return AdsListResource::collection($ads);

@@ -48,39 +48,23 @@ const category = ref(null)
 
 const loadAds = () => {
   page.value = 1
-  if (store.state.user.token) {
-    store.dispatch('getAuthAds', {params: {
-      page: 1,
-      query: searchQuery.value,
-      category: category.value
-    }})
-  } else {
-    store.dispatch('getAds', {params: {
-      page: 1,
-      query: searchQuery.value,
-      category: category.value
-    }})
-  }
+
+  store.dispatch('getAds', {params: {
+    page: 1,
+    query: searchQuery.value,
+    category: category.value
+  }})
 }
 
 const loadMoreAds = () => {
   if (page.value >= totalPages.value) return
 
   page.value += 1
-
-  if (store.state.user.token) {
-    store.dispatch('getMoreAuthAds', {params: {
-      page: page.value,
-      query: searchQuery.value,
-      category: category.value
-    }})
-  } else {
-    store.dispatch('getMoreAds', {params: {
-      page: page.value,
-      query: searchQuery.value,
-      category: category.value
-    }})
-  }
+  store.dispatch('getMoreAds', {params: {
+    page: page.value,
+    query: searchQuery.value,
+    category: category.value
+  }})
 }
 
 const filterAds = (query) => {

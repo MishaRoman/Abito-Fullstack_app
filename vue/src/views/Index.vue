@@ -36,26 +36,16 @@ const page = ref(1)
 
 const loadAds = () => {
   page.value = 1
-  if (store.state.user.token) {
-    store.dispatch('getAuthAds', {params: {page: 1}})
-  } else {
-    store.dispatch('getAds', {params: {page: 1}})
-  }
+  store.dispatch('getAds', {params: {page: 1}})
 }
 
 const loadMoreAds = () => {
   if (page.value >= totalPages.value) return
 
   page.value += 1
-  if (store.state.user.token) {
-    store.dispatch('getMoreAuthAds', {params: {
-      page: page.value,
-    }})
-  } else {
-    store.dispatch('getMoreAds', {params: {
-      page: page.value,
-    }})
-  }
+  store.dispatch('getMoreAds', {params: {
+    page: page.value,
+  }})
 }
 
 function filterAds(searchQuery) {

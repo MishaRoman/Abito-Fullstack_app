@@ -84,36 +84,9 @@ const store = createStore({
         })
     },
 
-    // get ads but through middleware auth, if you don't do it likes will not displaying correct
-    getAuthAds({commit}, {params}) {
-      commit('setAdsLoading', true)
-      return axiosClient.get('/auth/ads', {params: {
-        page: params.page,
-        query: params.query,
-        category: params.category
-      }})
-        .then((res) => {
-          commit('setAdsLoading', false)
-          commit('setAds', res.data)
-        })
-    },
-
     getMoreAds({commit}, {params}) {
       commit('setAdsLoading', true)
       return axiosClient.get('/ads', {params: {
-        page: params.page,
-        query: params.query,
-        category: params.category
-      }})
-        .then((res) => {
-          commit('setAdsLoading', false)
-          commit('setMoreAds', res.data)
-        })
-    },
-    // get ads but through middleware auth, if you don't do it likes will not displaying correct
-    getMoreAuthAds({commit}, {params}) {
-      commit('setAdsLoading', true)
-      return axiosClient.get('/auth/ads', {params: {
         page: params.page,
         query: params.query,
         category: params.category

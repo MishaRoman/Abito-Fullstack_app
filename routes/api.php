@@ -23,7 +23,6 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/user/update', [AuthController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::controller(AdsController::class)->group(function () {
-        Route::get('auth/ads', 'index');
         Route::get('/ads/{ad}', 'show');
         Route::get('/user/ads', 'myAds');
         Route::get('/favorites', 'favorites');

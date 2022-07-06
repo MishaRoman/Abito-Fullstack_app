@@ -34,7 +34,7 @@ class Ad extends Model
 
     public function favorited()
     {
-        return (bool) Favorite::where('user_id', Auth::id())
+        return (bool) Favorite::where('user_id', auth('sanctum')->id())
                             ->where('ad_id', $this->id)
                             ->first();
     }
