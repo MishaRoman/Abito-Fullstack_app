@@ -56,6 +56,7 @@
           name="body"
           class="comments-textarea"
           rows="12"
+          required
           v-model="commentBody"
           >
         </textarea>
@@ -68,29 +69,21 @@
     </div>
 
     <div class="comments-wrapper" v-if="ad.comments">
-      <div
-        class="comment"
+      <Comment 
         v-for="comment in ad.comments"
         :key="comment.id"
-      >
-        <router-link class="card-link" :to="{name: 'userAds', params: {id: comment.author.id}}">
-          <div class="comment-author">
-              <img :src="comment.author.image_url" class="author-avatar">
-              <div>
-                <span class="author-name">{{comment.author.name}}</span>
-                <span class="author-status">{{comment.created_at}}</span>
-              </div>
-          </div>
-        </router-link>
-        <div class="comment-body">
-          <p>{{comment.body}}</p>
-        </div>
-      </div>
+        :comment="comment"
+      />
+
     </div>
 
-    <div class="recommendations" v-if="otherAds.length">
+    <div class="recommendations">
       <h2 class="page-title">Other ads by this author</h2>
-      <div class="cards">
+      <div v-intersection="getAdsByAuthor" class="observer" :class="loading ? 'spinner': '' "></div>
+
+      <p v-if="!otherAds.length && !loading">There is no more ads</p>
+
+      <div class="cards" v-else>
         <AdCard
           v-for="ad in otherAds"
           :key="ad.id"
@@ -103,6 +96,7 @@
 
 <script setup>
 import AdCard from '../components/AdCard.vue'
+import Comment from '../components/Comment.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import { useStore } from 'vuex'
@@ -135,6 +129,7 @@ const ad = ref({
   comments: []
 })
 
+const loading = ref(false)
 const commentBody = ref('')
 const otherAds = ref([])
 const phoneNumBtn = ref(null)
@@ -143,22 +138,25 @@ function getAd() {
   store.dispatch('getAd', route.params.id)
     .then(res => {
       ad.value = res.data
-      getAdsByAuthor()
     })
 }
 
 const getAdsByAuthor = () => {
+  if (otherAds.value.length) return
+  loading.value = true
   store.dispatch('getAdsByAuthor',
     {
       authorId: ad.value.author.id,
       adId: ad.value.id
     })
     .then(res => {
+      loading.value = false
       otherAds.value = res.data
     })
 }
 
 const addComment = () => {
+  if (!store.state.user.token) return alert('You need to be logged in to add a comment')
   store.dispatch('addComment', {
     body: commentBody.value,
     adId: ad.value.id,
@@ -209,18 +207,5 @@ watch(route, (from, to) => {
 }
 .button-primary {
   margin-top: 15px;
-}
-
-.comment {
-  border-radius: 5px;
-  margin: 15px auto;
-  padding: 8px;
-  background-color: rgb(216, 223, 224);
-}
-.comment-author {
-  display: flex;
-}
-.comment-author .author-avatar {
-  margin-right: 10px;
 }
 </style>
