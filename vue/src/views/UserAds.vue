@@ -14,6 +14,10 @@
           <button class="button button-block button-primary" ref="phoneNumBtn">
             Show phone number
           </button>
+          <button class="button button-block button-success" :disabled="loading" @click="followDispatch">
+            {{ user.follows ? 'Unfollow': 'Follow'}}
+            <span class="loading" v-if="loading"></span>
+          </button>
         </div>
       </div>
 
@@ -42,11 +46,13 @@ const store = useStore()
 
 const ads = ref([])
 const phoneNumBtn = ref(null)
+const loading = ref(true)
 const user = ref({
   id: null,
   name: '',
   phone_number: null,
   image_url: '',
+  follows: false,
   member_since: null,
 })
 
@@ -54,7 +60,31 @@ store.dispatch('getUserAds', route.params.id)
   .then(res => {
     ads.value = res.data.ads
     user.value = res.data.user
+    loading.value = false
   })
+
+const followDispatch = () => {
+  if (!store.state.user.token) return alert('You need to be logged in to follow a user')
+  user.value.follows ? unfollow(): follow()
+}
+
+const follow = () => {
+  loading.value = true
+
+  store.dispatch('follow', user.value.id)
+    .then (res => {
+      user.value.follows = true
+      loading.value = false
+    })
+}
+const unfollow = () => {
+  loading.value = true
+  store.dispatch('unfollow', user.value.id)
+    .then (res => {
+      user.value.follows = false
+      loading.value = false
+    })
+}
 
 onMounted(() => {
   phoneNumBtn.value.addEventListener('click', () => phoneNumBtn.value.innerText = user.value.phone_number)

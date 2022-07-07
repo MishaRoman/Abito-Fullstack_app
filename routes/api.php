@@ -34,7 +34,8 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::delete('/ads/{ad}/destroy', 'destroy');
     });
     Route::post('/ads/{ad}/comments', [CommentsController::class, 'store']);
-    
+
+    Route::get('/followings', [FollowsController::class, 'index']);
     Route::post('/follow/{user}', [FollowsController::class, 'follow']);
     Route::post('/unfollow/{user}', [FollowsController::class, 'unfollow']);
 });

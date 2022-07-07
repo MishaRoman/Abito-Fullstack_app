@@ -146,6 +146,12 @@ const store = createStore({
           return res.data
         })
     },
+    getFollowings({commit}) {
+      return axiosClient.get('/followings')
+        .then(res => {
+          return res.data
+        })
+    },
 
     updateUser({commit}, data) {
       return axiosClient.post('/user/update', data)

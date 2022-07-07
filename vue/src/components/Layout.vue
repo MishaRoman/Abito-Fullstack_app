@@ -125,6 +125,10 @@ const routes = [
     name: 'myAds',
     title: 'My ads'
   },
+  {
+    name: 'followings',
+    title: 'Followings'
+  },
 ]
 
 const openAuthModal = () => showAuthModal.value = true

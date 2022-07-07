@@ -43,12 +43,8 @@
             Show phone number
           </button>
 
-          <button class="button button-block button-success" :disabled="loading" @click="follow" v-if="!ad.author.follows">
-            Follow
-            <span class="loading" v-if="loading"></span>
-          </button>
-          <button class="button button-block button-success" :disabled="loading" @click="unfollow" v-else>
-            Unfollow
+          <button class="button button-block button-success" :disabled="loading" @click="followDispatch">
+            {{ ad.author.follows ? 'Unfollow': 'Follow'}}
             <span class="loading" v-if="loading"></span>
           </button>
         </div>
@@ -180,6 +176,11 @@ const getComments = () => {
     .then (res => {
       ad.value.comments = res.data
     })
+}
+
+const followDispatch = () => {
+  if (!store.state.user.token) return alert('You need to be logged in to follow a user')
+  ad.value.author.follows ? unfollow(): follow()
 }
 
 const follow = () => {

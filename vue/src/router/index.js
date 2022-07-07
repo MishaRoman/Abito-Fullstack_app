@@ -9,7 +9,8 @@ import MyAds from '../views/MyAds.vue'
 import UserAds from '../views/UserAds.vue'
 import FilteredAds from '../views/FilteredAds.vue'
 import EditAd from '../views/EditAd.vue'
-import store from "../store";
+import Followings from '../views/Followings.vue'
+import store from "../store"
 
 const routes = [
   {
@@ -53,6 +54,12 @@ const routes = [
         path: '/favorites',
         meta: {requiresAuth: true},
         component: Favorites
+      },
+      {
+        name: 'followings',
+        path: '/followings',
+        meta: {requiresAuth: true},
+        component: Followings
       },
       {
         name: 'myAds',
