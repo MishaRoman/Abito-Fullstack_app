@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'phone_number' => $this->phone_number,
             'image_url' => $this->image ? URL::to($this->image) : URL::to('images/no_avatar.png'),
+            'follows' => $this->isFollowings($this->id),
             'member_since' => (new \DateTime($this->created_at))->format('d.m.Y'),
         ];
     }

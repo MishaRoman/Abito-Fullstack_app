@@ -166,6 +166,19 @@ const store = createStore({
           return res
         })
     },
+
+    follow({commit}, userId) {
+      return axiosClient.post(`/follow/${userId}`)
+        .then(res => {
+          return res
+        })
+    },
+    unfollow({commit}, userId) {
+      return axiosClient.post(`/unfollow/${userId}`)
+        .then(res => {
+          return res
+        })
+    },
     
   },
   mutations: {

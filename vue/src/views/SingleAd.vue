@@ -42,8 +42,14 @@
           <button class="button button-block button-primary" ref="phoneNumBtn">
             Show phone number
           </button>
-          <button class="button button-block button-success">
-            Write a message
+
+          <button class="button button-block button-success" :disabled="loading" @click="follow" v-if="!ad.author.follows">
+            Follow
+            <span class="loading" v-if="loading"></span>
+          </button>
+          <button class="button button-block button-success" :disabled="loading" @click="unfollow" v-else>
+            Unfollow
+            <span class="loading" v-if="loading"></span>
           </button>
         </div>
       </div>
@@ -124,12 +130,13 @@ const ad = ref({
     name: '',
     phone_number: null,
     image_url: '',
+    follows: false,
     member_since: null,
   },
   comments: []
 })
 
-const loading = ref(false)
+const loading = ref(true)
 const commentBody = ref('')
 const otherAds = ref([])
 const phoneNumBtn = ref(null)
@@ -138,6 +145,7 @@ function getAd() {
   store.dispatch('getAd', route.params.id)
     .then(res => {
       ad.value = res.data
+      loading.value = false
     })
 }
 
@@ -171,6 +179,23 @@ const getComments = () => {
   store.dispatch('getComments', ad.value.id)
     .then (res => {
       ad.value.comments = res.data
+    })
+}
+
+const follow = () => {
+  loading.value = true
+  store.dispatch('follow', ad.value.author.id)
+    .then (res => {
+      ad.value.author.follows = true
+      loading.value = false
+    })
+}
+const unfollow = () => {
+  loading.value = true
+  store.dispatch('unfollow', ad.value.author.id)
+    .then (res => {
+      ad.value.author.follows = false
+      loading.value = false
     })
 }
 
