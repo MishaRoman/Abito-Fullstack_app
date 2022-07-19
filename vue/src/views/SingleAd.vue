@@ -87,7 +87,7 @@
 
       <div class="cards" v-else>
         <AdCard
-          v-for="ad in otherAds"
+          v-for="ad in otherAds.ads"
           :key="ad.id"
           :ad="ad"
         />
@@ -134,7 +134,7 @@ const ad = ref({
 
 const loading = ref(true)
 const commentBody = ref('')
-const otherAds = ref([])
+const otherAds = ref({ads: [], isArrived: false})
 const phoneNumBtn = ref(null)
 
 function getAd() {
@@ -146,7 +146,7 @@ function getAd() {
 }
 
 const getAdsByAuthor = () => {
-  if (otherAds.value.length) return
+  if (otherAds.value.isArrived) return
   loading.value = true
   store.dispatch('getAdsByAuthor',
     {
@@ -155,7 +155,8 @@ const getAdsByAuthor = () => {
     })
     .then(res => {
       loading.value = false
-      otherAds.value = res.data
+      otherAds.value.ads = res.data
+      otherAds.value.isArrived = true
     })
 }
 
