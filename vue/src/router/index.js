@@ -10,6 +10,7 @@ import UserAds from '../views/UserAds.vue'
 import FilteredAds from '../views/FilteredAds.vue'
 import EditAd from '../views/EditAd.vue'
 import Followings from '../views/Followings.vue'
+import NotFound from '../views/NotFound.vue'
 import store from "../store"
 
 const routes = [
@@ -80,6 +81,11 @@ const routes = [
         component: EditAd
       },
     ]
+  },
+  {
+    path: '/404',
+    name: 'NotFound',
+    component: NotFound
   }
 ]
 
