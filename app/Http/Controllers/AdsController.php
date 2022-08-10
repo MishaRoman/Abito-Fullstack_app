@@ -11,11 +11,11 @@ use App\Models\Ad;
 use App\Models\User;
 use App\Models\Image;
 
+use App\Services\ImagesService;
+
 use App\Http\Filters\AdsFilter;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 
 
 class AdsController extends Controller
@@ -46,7 +46,7 @@ class AdsController extends Controller
         ]);
 
         foreach($images as $image) {
-            $relativePath = $this->saveImage($image);
+            $relativePath = ImagesService::saveImage($image);
             Image::create([
                 'title' => $relativePath,
                 'ad_id' => $ad->id
@@ -95,8 +95,10 @@ class AdsController extends Controller
 
         // delete ads' images
         foreach ($ad->images as $image) {
-            $absolutePath = public_path($image->title);
-            File::delete($absolutePath);
+            // Delete image file
+            ImagesService::deleteImage($image->title);
+            // Delete image from database
+            $image->delete();
         }
 
         $ad->delete();
@@ -152,35 +154,5 @@ class AdsController extends Controller
             ]
         ];
         return response()->json($json);
-    }
-
-    protected function saveImage($image)
-    {
-        if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
-            // Take out the base64 encoded text without mime type
-            $image = substr($image, strpos($image, ',') + 1);
-            // Get file extension
-            $type = strtolower($type[1]);
-
-            // Check if file is an image
-            if (!in_array($type, ['jpg', 'jpeg', 'png'])) {
-                throw new \Exception('invalid image type');
-            }
-
-            $image = str_replace(' ', '+', $image);
-            $image = base64_decode($image);
-
-            if ($image === false) {
-                throw new \Exception('base64_decode failed');
-            }
-        } else {
-            throw new \Exception('did not match data URI with image data');
-        }
-        $dir = 'images/';
-        $name = Str::random() . '.' . $type;
-
-        $relativePath = $dir . $name;
-        file_put_contents($relativePath, $image);
-        return $relativePath;
     }
 }
