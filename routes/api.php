@@ -40,12 +40,12 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/unfollow/{user}', [FollowsController::class, 'unfollow']);
 });
 
-Route::get('/user/{id}', [AdsController::class, 'userAds']);
+Route::get('/user/{user}', [AdsController::class, 'userAds']);
 Route::get('/categories', CategoriesController::class);
 Route::get('/ads', [AdsController::class, 'index']);
 Route::get('/ads/{ad}', [AdsController::class, 'show']);
 Route::get('/ads/{ad}/comments', [CommentsController::class, 'index']);
-Route::get('/ads/author/{authorId}/{adId}', [AdsController::class, 'getAdsByAuthor']);
+Route::get('/ads/author/{userId}/{adId}', [AdsController::class, 'getAdsByAuthor']);
 
 // Auth logins
 Route::post('/register', [AuthController::class, 'register']);

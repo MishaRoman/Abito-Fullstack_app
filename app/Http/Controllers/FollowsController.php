@@ -9,6 +9,11 @@ use App\Http\Resources\AdsListResource;
 
 class FollowsController extends Controller
 {
+    /**
+     * Get ads by user followings.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $users = auth()->user()->followings()->pluck('follower_user.user_id');
@@ -17,15 +22,27 @@ class FollowsController extends Controller
         return AdsListResource::collection($ads);
     }
 
+    /**
+     * Follow user.
+     *
+     * @param App\Models\User $user
+     * @return \Illuminate\Http\Response
+     */
     public function follow(User $user)
     {
         auth()->user()->followings()->attach($user);
-        return response('success', 200);
+        return response('success', 204);
     }
 
+    /**
+     * Unfollow user.
+     *
+     * @param App\Models\User $user
+     * @return \Illuminate\Http\Response
+     */
     public function unfollow(User $user)
     {
         auth()->user()->followings()->detach($user);
-        return response('success', 200);
+        return response('success', 204);
     }
 }

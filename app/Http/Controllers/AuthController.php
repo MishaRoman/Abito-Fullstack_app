@@ -7,18 +7,15 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Services\ImagesService;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(RegisterUserRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|string|unique:users,email',
-            'phone_number' => 'required|digits_between:10,13|unique:users,phone_number',
-            'password' => 'required|confirmed|min:8',
-        ]);
+        $data = $request->validated();
 
         $user = User::create([
             'name' => $data['name'],
@@ -35,12 +32,9 @@ class AuthController extends Controller
         ]);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email|exists:users,email',
-            'password' => 'required'
-        ]);
+        $credentials = $request->validated();
 
         if(!Auth::attempt($credentials)) {
             $json = [

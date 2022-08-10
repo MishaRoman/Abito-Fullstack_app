@@ -58,7 +58,7 @@
           type="text"
           name="address"
           class="input"
-          placeholder="Address"
+          placeholder="Addresss"
           required
           v-model="ad.address"
         >
@@ -145,7 +145,7 @@ const createAd = () => {
    .then(res => {
      router.push({name: 'single', params: {id: res.data.ad.id}})
    })
-   .catch(err => {
+   .catch((err) => {
      loading.value = false
      errors.value = err.response.data.error.message
    })

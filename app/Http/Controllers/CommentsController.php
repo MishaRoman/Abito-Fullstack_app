@@ -9,11 +9,24 @@ use App\Http\Resources\CommentsResource;
 
 class CommentsController extends Controller
 {
+    /**
+     * Get all comments for ad.
+     *
+     * @param \App\Models\Ad $ad
+     * @return \Illuminate\Http\Response
+     */
     public function index(Ad $ad)
     {
         return CommentsResource::collection($ad->comments);
     }
 
+    /**
+     * Create a new comment.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models $ad
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request, Ad $ad)
     {
         $data = $request->validate([

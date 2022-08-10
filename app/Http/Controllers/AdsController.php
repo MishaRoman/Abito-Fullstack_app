@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAdRequest;
+use App\Http\Requests\UpdateAdRequest;
 use App\Http\Resources\AdsListResource;
 use App\Http\Resources\SingleAdResource;
 use App\Http\Resources\UserResource;
@@ -15,17 +16,28 @@ use App\Services\ImagesService;
 
 use App\Http\Filters\AdsFilter;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 
 class AdsController extends Controller
 {
-    public function index(Request $request, AdsFilter $filters)
+    /**
+     * Get all ads.
+     *
+     * @param \App\Http\Filters\AdsFilter $filters
+     * @return \Illuminate\Http\Response
+     */
+    public function index(AdsFilter $filters)
     {
         $ads = Ad::filter($filters)->paginate(16);
         return AdsListResource::collection($ads);
     }
 
+    /**
+     * Create a new ad.
+     *
+     * @param \App\Http\Requests\StoreAdRequest $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(StoreAdRequest $request)
     {
         $data = $request->validated();
@@ -58,12 +70,24 @@ class AdsController extends Controller
         ]);
     }
 
+    /**
+     * Get the ad by id.
+     *
+     * @param \App\Models\Ad $ad
+     * @return \Illuminate\Http\Response
+     */
     public function show(Ad $ad)
     {
         return new SingleAdResource($ad);
     }
 
-    public function edit(Request $request)
+    /**
+     * Edit an ad.
+     *
+     * @param \App\Http\Requests\UpdateAdRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(UpdateAdRequest $request)
     {
         $ad = Ad::where('id', $request->id)->firstOrFail();
 
@@ -71,12 +95,7 @@ class AdsController extends Controller
             return response('This action is unauthorize', 401);
         }
 
-        $data = $request->validate([
-            'title' => 'required|max:64',
-            'description' => 'required',
-            'address' => 'required|max:64',
-            'price' => 'required|max:10',
-        ]);
+        $data = $request->validated();
 
         $ad->update($data);
 
@@ -88,7 +107,14 @@ class AdsController extends Controller
         return response()->json($json);
     }
 
-    public function destroy(Ad $ad) {
+    /**
+     * Delete an ad.
+     *
+     * @param \App\Models\Ad $ad
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Ad $ad)
+    {
         if ($ad->user_id !== auth()->id()) {
             return response('This action is unauthorize', 401);
         }
@@ -103,47 +129,88 @@ class AdsController extends Controller
 
         $ad->delete();
         
-        return response('Ad was deleted successfully', 200);
+        return response('Ad was deleted successfully', 204);
     }
 
-    public function getAdsByAuthor(Request $request, $authorId, $adId)
+    /**
+     * Get ads by user id.
+     *
+     * @param int $userId
+     * @param int $adId
+     * @return \Illuminate\Http\Response
+     */
+    public function getAdsByAuthor(int $userId, int $adId)
     {
-        $ads = Ad::where('user_id', $authorId)->where('id', '!=', $adId)->take(8)->get();
+        $ads = Ad::where('user_id', $userId)->where('id', '!=', $adId)->take(8)->get();
         return AdsListResource::collection($ads);
     }
 
+    /**
+     * Get favorite ads for auth user
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function favorites()
     {
+        /** @var \App\Models\User $user */
         $user = auth()->user();
+
         $ads = $user->favorites;
         return AdsListResource::collection($ads);
     }
 
+    /**
+     * Add an ad to favorites.
+     *
+     * @param \App\Models\Ad $ad
+     * @return \Illuminate\Http\Response
+     */
     public function favorite(Ad $ad)
     {
+        /** @var \App\Models\User $user */
         $user = auth()->user();
+
         $user->favorites()->attach($ad->id);
-        return 'success';
+        return response('success', 204);
     }
 
+    /**
+     * Remove ad from favorites.
+     *
+     * @param \App\Models\Ad $ad
+     * @return \Illuminate\Http\Response
+     */
     public function unfavorite(Ad $ad)
     {
+        /** @var \App\Models\User $user */
         $user = auth()->user();
+
         $user->favorites()->detach($ad->id);
-        return 'success';
+        return response('success', 204);
     }
 
+    /**
+     * Get all ads for auth user.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function myAds()
     {
+        /** @var \App\Models\User $user */
         $user = auth()->user();
+
         $ads = $user->ads;
         return AdsListResource::collection($ads);;
     }
 
-    public function userAds($id)
+    /**
+     * Get all ads by user id.
+     *
+     * @param \App\Models\User $user
+     * @return \Illuminate\Http\Response
+     */
+    public function userAds(User $user)
     {
-        $user = User::where('id', $id)->firstOrFail();
-
         $ads = AdsListResource::collection($user->ads);
         $user = new UserResource($user);
 

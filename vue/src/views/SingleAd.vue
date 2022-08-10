@@ -83,7 +83,7 @@
       <h2 class="page-title">Other ads by this author</h2>
       <div v-intersection="getAdsByAuthor" class="observer" :class="loading ? 'spinner': '' "></div>
 
-      <p v-if="!otherAds.length && !loading">There is no more ads</p>
+      <p v-if="!otherAds.ads.length && !loading">There is no more ads</p>
 
       <div class="cards" v-else>
         <AdCard
