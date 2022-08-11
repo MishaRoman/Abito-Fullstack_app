@@ -13,7 +13,7 @@ class CommentsController extends Controller
      * Get all comments for ad.
      *
      * @param \App\Models\Ad $ad
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\CommentsResource
      */
     public function index(Ad $ad)
     {

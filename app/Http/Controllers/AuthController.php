@@ -13,6 +13,12 @@ use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
+    /**
+     * Register new user.
+     * 
+     * @param \App\Http\Requests\RegisterUserRequest $request
+     * @return \Illuminate\Http\Response
+     */
     public function register(RegisterUserRequest $request)
     {
         $data = $request->validated();
@@ -32,6 +38,12 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Login user.
+     * 
+     * @param \App\Http\Requests\LoginRequest $request
+     * @return \Illuminate\Http\Response
+     */
     public function login(LoginRequest $request)
     {
         $credentials = $request->validated();
@@ -56,6 +68,11 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Logout user.
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function logout()
     {
         $user = Auth::user();
@@ -67,12 +84,23 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Get auth user.
+     * 
+     * @return \App\Http\Resources\UserResource
+     */
     public function user()
     {
         $user = Auth::user();
         return new UserResource($user);
     } 
 
+    /**
+     * Update user profile.
+     * 
+     * @param \App\Http\Requests\UpdateProfileRequest $request
+     * @return \Illuminate\Http\Response
+     */
     public function update(UpdateProfileRequest $request)
     {
         $user = Auth::user();

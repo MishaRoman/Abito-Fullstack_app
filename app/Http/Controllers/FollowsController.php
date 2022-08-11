@@ -12,7 +12,7 @@ class FollowsController extends Controller
     /**
      * Get ads by user followings.
      *
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\AdsListResource
      */
     public function index()
     {

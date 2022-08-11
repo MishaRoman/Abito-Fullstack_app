@@ -24,7 +24,7 @@ class AdsController extends Controller
      * Get all ads.
      *
      * @param \App\Http\Filters\AdsFilter $filters
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\AdsListResource
      */
     public function index(AdsFilter $filters)
     {
@@ -74,7 +74,7 @@ class AdsController extends Controller
      * Get the ad by id.
      *
      * @param \App\Models\Ad $ad
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SingleAdResource
      */
     public function show(Ad $ad)
     {
@@ -137,7 +137,7 @@ class AdsController extends Controller
      *
      * @param int $userId
      * @param int $adId
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\AdsListResource
      */
     public function getAdsByAuthor(int $userId, int $adId)
     {
@@ -148,7 +148,7 @@ class AdsController extends Controller
     /**
      * Get favorite ads for auth user
      *
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\AdsListResource
      */
     public function favorites()
     {
@@ -192,7 +192,7 @@ class AdsController extends Controller
     /**
      * Get all ads for auth user.
      *
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\AdsListResource
      */
     public function myAds()
     {
